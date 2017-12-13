@@ -20,7 +20,7 @@ import PUC_2v5
 import PUC_2v6              ## Nova PUC.
 import SerialDRS            ## Biblioteca Fonte Digital
 import Controle_GPIB
-import Controle_GPIB_2      ## Para comunicação SERIAL do multímetro 34401A
+#import Controle_GPIB_2      ## Para comunicação SERIAL do multímetro 34401A
 from PyQt4 import QtCore, QtGui
 from interface_v7_Bancada1 import Ui_InterfaceBobina
 import traceback
@@ -114,7 +114,7 @@ class library(object):
 
 
 lib = library()
-lib.GPIB = Controle_GPIB_2.Controle()  #Modificado para a biblioteca Controle_GPIB_2 para a comunicação Serial do multímetro 34401A da Bancada 2.
+lib.GPIB = Controle_GPIB.Controle()  
 
 # ____________________________________________
 
