@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# Lembretes: 
+# Lembretes:
 
 # Bobina girante v2.0
 
@@ -34,7 +34,7 @@ class library(object):
         self.display = 0            # Display Heidenhain
         self.motor = 0              # Driver do motor
         self.integrador = 0         # Integrador
-        self.controle_fonte = 0     #ACRESCENTADO# Seleciona o controle via PUC ou Digital  
+        self.controle_fonte = 0     #ACRESCENTADO# Seleciona o controle via PUC ou Digital
         self.StatusIntegrador = []
         self.Janela = 0
         self.endereco = 2
@@ -110,9 +110,9 @@ class library(object):
         self.GPIB = 0
         self.Multimetro = 0
         self.Digital = 0               #ACRESCENTADO#  Seleciona a fonte digital
-        self.Digital_Conectada = 0     #ACRESCENTADO#  Retorna se a fonte está conectada: 0 = Desconectada   1 = Conectada  
-        
-        
+        self.Digital_Conectada = 0     #ACRESCENTADO#  Retorna se a fonte está conectada: 0 = Desconectada   1 = Conectada
+
+
 lib = library()
 lib.GPIB = Controle_GPIB_2.Controle()  #Modificado para a biblioteca Controle_GPIB_2 para a comunicação Serial do multímetro 34401A da Bancada 2.
 
@@ -169,7 +169,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             self.ui.tabWidget.setTabEnabled(i,False)
         self.ui.conectar.clicked.connect(self.CONECTAR)
         self.ui.zerar.clicked.connect(self.ZERAR)
-        self.ui.ligar.clicked.connect(self.LIGARMOTOR)             
+        self.ui.ligar.clicked.connect(self.LIGARMOTOR)
         self.ui.EndDriver_2.activated.connect(self.Texto_Combobox)
         self.ui.Zerar_Offset.clicked.connect(self.ZERAROFFSET)
         self.ui.Parar_1.clicked.connect(self.PARARMOTORES)
@@ -246,12 +246,12 @@ class JanelaGrafica(QtGui.QMainWindow):
         self.ui.bt_read_MultiCh.clicked.connect(self.start_timer)
         self.ui.bt_stop_MultiCh.clicked.connect(self.stop_timer)
         self.ui.check_aux.toggled.connect(self.Habilitar_trim)
-        
-        
+
+
         self.ui.conectar_GPIB.clicked.connect(self.Conectar_GPIB)
         self.ui.Atualizar_Status.clicked.connect(self.Status_Display_Integrador)
         self.ui.label_173.setVisible(False)                     #ACRESCENTADO - Apenas para indicar a unidade da Amplitude (Ap) na fonte digital, Aba "Senoidal"#
-        self.ui.label_174.setVisible(False)                     #ACRESCENTADO- Apenas para indicar a unidade da Amplitude (Ap) na fonte digital, Aba "Senoidal Amortecida"#      
+        self.ui.label_174.setVisible(False)                     #ACRESCENTADO- Apenas para indicar a unidade da Amplitude (Ap) na fonte digital, Aba "Senoidal Amortecida"#
         self.load_default()
 
     def load_default(self):
@@ -311,7 +311,7 @@ class JanelaGrafica(QtGui.QMainWindow):
 
     ########### ABA 1: Conexao ###########
 
-    def CONECTAR(self):        
+    def CONECTAR(self):
         if (self.ui.conectar.text() == 'Conectar'):
 
             lib.stop = 0
@@ -377,7 +377,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                             self.ui.label_118.setEnabled(False)
                             self.ui.Defasagem_Senoidal.setEnabled(False)
                             self.ui.Posicao_Final_Senoidal.setEnabled(False)
-                            
+
                         else:
                             lib.PUC = PUC_2v6.SerialCom(Address)
                             time.sleep(.1)
@@ -391,8 +391,8 @@ class JanelaGrafica(QtGui.QMainWindow):
                             self.ui.Posicao_Final_Senoidal.setEnabled(True)
                             for i in range(3,7): ## Abas curvas nao estao prontas
                                 self.ui.tabWidget_3.setTabEnabled(i,False)
-                            
-                            
+
+
                         status = lib.PUC.Conectar(self.ui.Porta_4.currentIndex() + 1)
                         if (status == False):
                             lib.PUC_Conectada = 0
@@ -410,7 +410,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                     except:
                         lib.PUC_Conectada = 0
                         return
-                else:                                #ACRESCENTADO# Se a combobox estiver selecionada para Digital, ou seja, lib.controle_fonte = 1   
+                else:                                #ACRESCENTADO# Se a combobox estiver selecionada para Digital, ou seja, lib.controle_fonte = 1
                     try:
                         Address = int(self.ui.Enderac_Digi.text())  # Endereço digital por Default será sempre 1
                         lib.Digital = SerialDRS.SerialDRS_FBP()
@@ -443,14 +443,14 @@ class JanelaGrafica(QtGui.QMainWindow):
                             self.ui.Porta_3.setEnabled(False)
                     except:
                         lib.Digital_Conectada = 0
-                        return                    
+                        return
             except:
                 QtGui.QMessageBox.critical(self,'Erro.','Porta serial ocupada ou inexistente.',QtGui.QMessageBox.Ok)
                 return
 
             for i in range(1,const.numero_de_abas-1):
                 self.ui.tabWidget.setTabEnabled(i,True)
-            
+
             self.ui.conectar.setText('Desconectar')
             self.ui.Tipo_Display.setEnabled(False)
             self.ui.Porta.setEnabled(False)
@@ -466,7 +466,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                 lib.PUC_Conectada = 1
             else:
                 lib.Digital_Conectada = 1
-                        
+
         else:
             lib.stop = 1
             lib.display.Desconectar()
@@ -484,7 +484,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                     lib.Digital_Conectada = 0
             except:
                 QtGui.QMessageBox.critical(self,'Erro.','Erro ao Desconectar a fonte de alimentação. \nVerificar Equipamento.',QtGui.QMessageBox.Ok)
-            
+
             for i in range(1,const.numero_de_abas):
                 self.ui.tabWidget.setTabEnabled(i,False)
             self.ui.Tipo_Display.setEnabled(True)
@@ -500,7 +500,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             self.ui.Tipo_PUC.setEnabled(True)
             self.ui.conectar.setText('Conectar')
 
-            
+
     ########### ABA 2: Configuracoes Gerais ###########
 
     def CONFGERAL(self):
@@ -521,7 +521,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         const.final_A = float(self.ui.final_A.text())
         const.final_B = float(self.ui.final_B.text())
         Controle_Status()
-    
+
 
     ########### ABA 3: Mesas Transversais ###########
 
@@ -612,7 +612,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             posicao = -2
             self.ui.posicao_bobina_montada.setText('-2')
         motortransversal(posicao, posicao)
-        
+
     def KILL(self):
         lib.parartudo = 1
         time.sleep(0.5)
@@ -620,7 +620,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         self.Emergencia_Fonte()
         time.sleep(3)
         lib.parartudo = 0
-    
+
     def ZERAR(self):
         lib.stop = 1
         time.sleep(1)
@@ -631,7 +631,7 @@ class JanelaGrafica(QtGui.QMainWindow):
 
 
     ########### ABA 4: Fonte  ###############
-    
+
     def Valor_Equacao(self,index,Corrente,Fator_Fonte):
         y=0
         if lib.Fonte_Calibrada == [1,1]:
@@ -659,7 +659,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                     y = y + (float(valores[i])*(Corrente**i))
             if index==1:
                 y = Corrente*Fator_Fonte
-        
+
         if lib.Fonte_Calibrada == [0,0]:
             if index==0:
                 y = Corrente/Fator_Fonte
@@ -667,7 +667,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                 y = Corrente*Fator_Fonte
         return y
 
-    
+
 
     def Start_Fonte(self):
         if lib.controle_fonte == 0:  #ACRESCENTADO# Selecionado para PUC
@@ -678,7 +678,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                     Seguranca_Habilitada = 0
                 else:
                     return
-            
+
             if (lib.Status_Fonte == 0):
                 try:
                     corrente = round(lib.PUC.ReadAD(),3)
@@ -690,7 +690,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                     if ramp == False:
                         QtGui.QMessageBox.critical(lib.Janela,'Atenção.','Corrente PUC não zerada.\nImpossível ligar a fonte.',QtGui.QMessageBox.Ok)
                         return
-                if Seguranca_Habilitada == 1:                
+                if Seguranca_Habilitada == 1:
                     status = lib.PUC.ReadDigIn()
                     time.sleep(0.25)
                     if dec_bin(status,6) == 1:
@@ -705,7 +705,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                         time.sleep(0.5)
                         status = lib.PUC.ReadDigIn()
                         time.sleep(0.25)
-                        if dec_bin(status,7) == 1:                    
+                        if dec_bin(status,7) == 1:
                             lib.Status_Fonte = 1                                ##
                             lib.Corrente_Atual = 0                              ##
                             self.ui.Carregar_Config_Fonte.setEnabled(True)      ##
@@ -716,7 +716,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                             time.sleep(0.5)
                             status = lib.PUC.ReadDigIn()
                             time.sleep(0.25)
-                            if dec_bin(status,7) == 1:                        
+                            if dec_bin(status,7) == 1:
                                 lib.Status_Fonte = 1
                                 lib.Corrente_Atual = 0
                                 self.ui.Carregar_Config_Fonte.setEnabled(True)
@@ -735,11 +735,11 @@ class JanelaGrafica(QtGui.QMainWindow):
                     time.sleep(0.5)
                     lib.Status_Fonte = 1
                     lib.Corrente_Atual = 0
-                    self.ui.groupBox_5.setEnabled(True) 
+                    self.ui.groupBox_5.setEnabled(True)
             else:
     ##            status = lib.PUC.WriteDigBit(0,0)
                 status = lib.PUC.WriteDigBit(1,0)
-                if status == True:                
+                if status == True:
                     lib.Status_Fonte = 0
                     lib.Corrente_Atual = 0
                     lib.PUC.WriteDA(0)
@@ -770,15 +770,15 @@ class JanelaGrafica(QtGui.QMainWindow):
                     if ramp == False:
                         QtGui.QMessageBox.critical(lib.Janela,'Atenção.','Corrente da fonte digital não zerada.\nImpossível ligar a fonte.',QtGui.QMessageBox.Ok)
                         return
-                if Seguranca_Habilitada == 1:                
+                if Seguranca_Habilitada == 1:
                     status = lib.Digital.Read_ps_SoftInterlocks()
                     time.sleep(0.25)
-                    if status != 0:  
+                    if status != 0:
                         QtGui.QMessageBox.critical(self,'Atenção.','Soft Interlock da Fonte Acionado.',QtGui.QMessageBox.Ok)
                         return
                     status2 = lib.Digital.Read_ps_HardInterlocks()
                     time.sleep(0.25)
-                    if status2 != 0:  
+                    if status2 != 0:
                         QtGui.QMessageBox.critical(self,'Atenção.','Hard Interlock da Fonte Acionado.',QtGui.QMessageBox.Ok)
                         return
                     lib.Digital.TurnOn()                    # Liga saída da fonte
@@ -809,7 +809,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                         self.ui.Corrente_Atual.setEnabled(False)
                 else:
                     QtGui.QMessageBox.critical(self,'Atenção.','Fonte Digital não recebeu o comando.',QtGui.QMessageBox.Ok)
-                    return                        
+                    return
 
     def Emergencia_Fonte(self):
         if lib.controle_fonte == 0:  #ACRESCENTADO# Selecionado para PUC
@@ -834,8 +834,8 @@ class JanelaGrafica(QtGui.QMainWindow):
                 time.sleep(.1)
             lib.Status_Fonte = 0
             lib.Fonte_Ciclagem = 0
-           
-    
+
+
     def Salvar_Fonte(self):
         try:
             nome = str(self.ui.Nome_Fonte.text())
@@ -875,7 +875,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         except:
             QtGui.QMessageBox.warning(self,'Atenção.','Valor não Numérico.',QtGui.QMessageBox.Ok)
             return
-        try:    
+        try:
             f = open(arquivo, 'w')
         except:
             return
@@ -915,7 +915,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             f.write('Reta correcao leitura:\t' + str(lib.reta_leitura) + '\n')
         f.write('Corrente Arbitraria Auto:\t' + str(corrente_arbitraria))
         f.close()
-        
+
 
     def Carregar_Fonte(self):
         try:
@@ -936,7 +936,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         for i in range(len(leitura)):
             c = leitura[i].split('\t')
             dados[i] = c[1]
-            
+
         try:
             self.ui.tabWidget_2.setEnabled(True)
             self.ui.Nome_Fonte.setText(dados[0])
@@ -1035,7 +1035,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             QtGui.QMessageBox.warning(self,'Atenção.','Valor Incorreto para Corrente Minima da Fonte.\n                    Verifique o Valor.',QtGui.QMessageBox.Ok)
             Corrente = 'False'
             return (Corrente)
-        
+
         if (index == 0) or (index == 1):
             if (Corrente)>(Corrente_Maxima):
                 if (index == 0):
@@ -1050,14 +1050,14 @@ class JanelaGrafica(QtGui.QMainWindow):
                 QtGui.QMessageBox.warning(self,'Atenção.','Verificar valores da Corrente de Pico a Pico e Offset.\nValores fora do Limite da Fonte.',QtGui.QMessageBox.Ok)
                 Corrente = 'False'
                 return (Corrente)
-            
+
             if ((-Corrente/2)+offset) < (Corrente_Minima):
                 QtGui.QMessageBox.warning(self,'Atenção.','Verificar valores da Corrente de Pico a Pico e Offset.\nValores fora do Limite da Fonte.',QtGui.QMessageBox.Ok)
                 Corrente = 'False'
                 return (Corrente)
-            
+
         return(float(Corrente))
-    
+
     def Corrente_Fonte(self):
         try:
             if lib.controle_fonte == 0:             #ACRESCENTADO# Seleciona a PUC
@@ -1104,25 +1104,25 @@ class JanelaGrafica(QtGui.QMainWindow):
                     self.ui.lcd_Corrente_DCCT.setEnabled(True)
                     self.ui.label_161.setEnabled(True)
                     self.ui.label_164.setEnabled(True)
-                    corrente4 = round(self.ConverteDCCT(), 3)           # Para a fonte digital de 225 A 
+                    corrente4 = round(self.ConverteDCCT(), 3)           # Para a fonte digital de 225 A
                     self.ui.lcd_Corrente_DCCT.display(corrente4)
                     QtGui.QApplication.processEvents()
-                
+
                 QtGui.QApplication.processEvents()
-                
+
         except:
             if lib.Status_Fonte == 1:
                 QtGui.QMessageBox.warning(self,'Atenção.','Verificar Dados da Fonte.',QtGui.QMessageBox.Ok)
             return
 
-    def ConverteDCCT(self):                     #ACRESCENTADO# 
+    def ConverteDCCT(self):                     #ACRESCENTADO#
         self.variavel = lib.GPIB.Coleta_Multimetro()
         if self.ui.DCCT_select.currentIndex() == 0:   #Para cabeça de 40A
             self.num = (float(self.variavel))*4
         if self.ui.DCCT_select.currentIndex() == 1:   #Para cabeça de 160A
             self.num = (float(self.variavel))*16
         if self.ui.DCCT_select.currentIndex() == 2:   #Para cabeça de 320A
-            self.num = (float(self.variavel))*32            
+            self.num = (float(self.variavel))*32
         return self.num
 
     def Converte_DCCT_MultiCanal(self):         #ACRESCENTADO#
@@ -1132,7 +1132,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         if self.ui.DCCT_select.currentIndex() == 1:   #Para cabeça de 160A
             self.num = (float(self.variavel))*16
         if self.ui.DCCT_select.currentIndex() == 2:   #Para cabeça de 320A
-            self.num = (float(self.variavel))*32            
+            self.num = (float(self.variavel))*32
         return self.num
 
     def Coleta_tensao(self):                    #ACRESCENTADO#
@@ -1143,7 +1143,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         elif len(valor_tensao) == 0:
             tensao = 0
         return tensao
-      
+
     def Rampa(self,final,atual,passo,tempo):
         status_final = []
         if lib.controle_fonte == 0:             #ACRESCENTADO# Seleciona a PUC
@@ -1184,7 +1184,7 @@ class JanelaGrafica(QtGui.QMainWindow):
     ##                    QtGui.QMessageBox.warning(self,'Atenção.','Corrente Final Não Atingida.',QtGui.QMessageBox.Ok)
     ##                    return False
     ######
-            
+
             except:
                 try:
                     if ((final>atual) and ((final-atual)<passo)) or ((final<atual) and ((atual-final)<passo)):
@@ -1192,7 +1192,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                         self.Corrente_Fonte()
                         return True
 
-                    
+
     ##                    f_saida = float(self.ui.Fator_Saida.text())
     ##                    if final == self.Valor_Equacao(0,0,f_saida):
     ##                        self.Corrente_Fonte()
@@ -1211,11 +1211,11 @@ class JanelaGrafica(QtGui.QMainWindow):
     ##                            QtGui.QMessageBox.warning(self,'Atenção.','Corrente Final Não Atingida.',QtGui.QMessageBox.Ok)
     ##                            return False
 
-                    
+
                 except:
                     return False
-        else:                               #ACRESCENTADO# Seleciona a Fonte Digital.  
-            mode = 0            
+        else:                               #ACRESCENTADO# Seleciona a Fonte Digital.
+            mode = 0
             lib.Digital.OpMode(mode) #Seleciona o mode = 0 (Operação Slowref)
             try:
                 if final > atual:
@@ -1227,7 +1227,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                 for i in faixa:
                     if (lib.parartudo == 0):
                         time.sleep(tempo)
-                        lib.Digital.SetISlowRef(i)  
+                        lib.Digital.SetISlowRef(i)
                     else:
                         lib.Digital.SetISlowRef(0)
                         time.sleep(0.1)
@@ -1242,7 +1242,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                         return True
                 except:
                     return False
-        
+
     def Rampa_Corrente_Manual(self):
 ##        atual = round(lib.PUC.ReadDA(),3)
         if lib.controle_fonte == 0:                 #ACRESCENTADO# Seleciona a PUC
@@ -1266,7 +1266,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             except:
                 QtGui.QMessageBox.warning(self,'Atenção.','Valor Incorretos ou não Numérico.',QtGui.QMessageBox.Ok)
                 return
-            
+
             self.ui.tabWidget_2.setEnabled(False)
     ##        self.ui.coletar.setEnabled(False)
     ##        self.ui.Carregar_Config_Fonte.setEnabled(False)
@@ -1276,7 +1276,7 @@ class JanelaGrafica(QtGui.QMainWindow):
 
     ##        Rampa_Corrente(final,atual,passo,tempo)
             ramp = self.Rampa(final,atual,passo,tempo)
-            
+
             if ramp == True:
                 QtGui.QMessageBox.information(lib.Janela,'Aviso.','Corrente atingida com Sucesso.',QtGui.QMessageBox.Ok)
             else:
@@ -1305,7 +1305,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             except:
                 QtGui.QMessageBox.warning(self,'Atenção.','Valor Incorretos ou não Numérico.',QtGui.QMessageBox.Ok)
                 return
-            
+
             self.ui.tabWidget_2.setEnabled(False)
     ##        self.ui.coletar.setEnabled(False)
     ##        self.ui.Carregar_Config_Fonte.setEnabled(False)
@@ -1315,14 +1315,14 @@ class JanelaGrafica(QtGui.QMainWindow):
 
     ##        Rampa_Corrente(final,atual,passo,tempo)
             ramp = self.Rampa(final,atual,passo,tempo)
-            
+
             if ramp == True:
                 QtGui.QMessageBox.information(lib.Janela,'Aviso.','Corrente atingida com Sucesso.',QtGui.QMessageBox.Ok)
             else:
                 QtGui.QMessageBox.critical(self,'Atenção.','Falha! Verifique Valores da Fonte.',QtGui.QMessageBox.Ok)
             self.ui.tabWidget_2.setEnabled(True)
             QtGui.QApplication.processEvents()
-            
+
 
     def Rampa_Corrente_Automatico(self,dados_corrente,dados_selecao_correntes):
         if lib.controle_fonte == 0:                 #ACRESCENTADO# Seleciona a PUC
@@ -1367,7 +1367,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                     else:
                         lib.PUC.WriteDA(dados_corrente[i])
     ##                    time.sleep(.02) ## Delay entre pontos para conservar a fonte.
-      
+
             QtGui.QMessageBox.information(lib.Janela,'Atenção.','Processo de Coleta Automática Concluído.',QtGui.QMessageBox.Ok)
 
         else:                                           #ACRESCENTADO# Seleciona a Fonte Digital.
@@ -1412,9 +1412,9 @@ class JanelaGrafica(QtGui.QMainWindow):
                     else:
                         lib.Digital.SetISlowRef(dados_corrente[i])
     ##                    time.sleep(.02) ## Delay entre pontos para conservar a fonte.
-      
+
             QtGui.QMessageBox.information(lib.Janela,'Atenção.','Processo de Coleta Automática Concluído.',QtGui.QMessageBox.Ok)
-         
+
     def Hab_Auto(self):
         if self.ui.Chk_Auto.isChecked():
             self.ui.Hab_Corretora.setEnabled(False)
@@ -1423,7 +1423,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             self.ui.Hab_Corretora.setEnabled(True)
             self.ui.C_Sucessivas.setEnabled(True)
 
-            
+
         ########### ABA 4.2: Curva  ###########
     def Verificar_Dados_Curva(self,index): ## index=0 Escreve vetor de dados    index=1 compara dados
         Tipo_Curva = int(self.ui.tabWidget_3.currentIndex())
@@ -1437,7 +1437,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                         lib.Dados_Curva.append(self.ui.Defasagem_Senoidal.text())
                         lib.Dados_Curva.append(self.ui.N_Ciclos_Senoidal.text())
                         lib.Dados_Curva.append(self.ui.Posicao_Final_Senoidal.text())
-                                        
+
                 if Tipo_Curva == 1:         #Senoidal Amortecida
                     lib.Dados_Curva.append(self.ui.Offset_Senoidal_Amortecida.text())
                     lib.Dados_Curva.append(self.ui.Amplitude_Senoidal_Amortecida.text())
@@ -1455,11 +1455,11 @@ class JanelaGrafica(QtGui.QMainWindow):
 ##                        ordem = numpy.append(ordem, valor)
 ##                        amplitude = max(ordem)
 ##                    lib.Dados_Curva.append(amplitude)                       #Amplitude = lib.Dados_Curva[0]
-##                    cell = self.ui.tabela_config.setCurrentCell(6,1)        
+##                    cell = self.ui.tabela_config.setCurrentCell(6,1)
 ##                    periodo = self.ui.tabela_config.currentItem().text()
-##                    lib.Dados_Curva.append(float(1/periodo*10E-03))         #Frequência = lib.Dados_Curva[1]                    
+##                    lib.Dados_Curva.append(float(1/periodo*10E-03))         #Frequência = lib.Dados_Curva[1]
 ##                    lib.Dados_Curva.append(self.ui.Ciclos_Curva_2.text())   #Número de ciclos = lib.Dados_Curva[2]
-##                    
+##
                 lib.Dados_Curva.append(self.ui.Fator_Entrada.text())
                 lib.Dados_Curva.append(self.ui.Fator_Saida.text())
                 lib.Dados_Curva.append(self.ui.Corrente_Maxima_Fonte.text())
@@ -1468,7 +1468,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             except:
                 QtGui.QMessageBox.warning(self,'Atenção.','Dados Incorretos.',QtGui.QMessageBox.Ok)
                 return False
-            
+
         if index == 1:
             try:
                 if Tipo_Curva == 0:         #Senoidal
@@ -1515,7 +1515,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             except:
                 QtGui.QMessageBox.warning(self,'Atenção.','Dados Incorretos.',QtGui.QMessageBox.Ok)
                 return False
-        
+
 
     def Plotar_Curva(self):
         if lib.controle_fonte == 0:                 #ACRESCENTADO# Seleciona a PUC
@@ -1533,12 +1533,12 @@ class JanelaGrafica(QtGui.QMainWindow):
             else:
                 try:
                     pontos, checksum, ciclos, freq = self.Gerar_Curva()
-                    
+
                 except:
-                    
+
                     traceback.print_exc(file=sys.stdout)
                     return
-                
+
             for i in range(len(pontos)):
                 pontos[i]=pontos[i]*f_saida
             pontos = pontos[:ciclos]
@@ -1552,7 +1552,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             except:
                 QtGui.QMessageBox.warning(self,'Atenção.','Valor não Numérico.',QtGui.QMessageBox.Ok)
                 return
-            
+
             pontos = lib.Digital.Recv_wfmRef_Curve(0,pontos)  #Recebe os pontos float da curva
             print(pontos[:20], 'Plotar')
 ##            for i in range(len(pontos)):
@@ -1561,7 +1561,7 @@ class JanelaGrafica(QtGui.QMainWindow):
     ##        print(pontos[0:100])
             plt.plot(pontos)
             plt.show()
-            
+
 
     def Enviar_Curva(self):
         resp = self.Verificar_Dados_Curva(0)
@@ -1570,7 +1570,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         self.ui.tabWidget_2.setEnabled(False)
         QtGui.QApplication.processEvents()
 
-        if lib.controle_fonte == 0:                 #ACRESCENTADO# Seleciona a PUC         
+        if lib.controle_fonte == 0:                 #ACRESCENTADO# Seleciona a PUC
             if (lib.Modelo_PUC == 0):
                 try:
                     curva, checksum, pontos, ciclos, freq = self.Gerar_Curva()
@@ -1585,7 +1585,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                     self.ui.tabWidget_2.setEnabled(True)
                     return
                 check = lib.PUC.SendCurve(pontos,True)
-                
+
             self.ui.tabWidget_2.setEnabled(True)
             QtGui.QApplication.processEvents()
             if check == checksum:
@@ -1609,18 +1609,18 @@ class JanelaGrafica(QtGui.QMainWindow):
                 self.ui.tabWidget_2.setEnabled(True)
                 QtGui.QApplication.processEvents()
                 return False
-                
+
 
     def Gerar_Curva(self):
-        
+
         Tipo_Curva = int(self.ui.tabWidget_3.currentIndex())
-        
+
         try:
             f_saida = float(self.ui.Fator_Saida.text())
         except:
             QtGui.QMessageBox.warning(self,'Atenção.','Verifique Valor do Parâmetro de Fator de Saída na Configuração.',QtGui.QMessageBox.Ok)
-            return False 
-               
+            return False
+
         try:                                    #Definindo Offset
             if Tipo_Curva == 0:
                 self.offset = self.Verificar_Limite_Corrente(0,float(self.ui.Offset_Senoidal.text()))
@@ -1636,22 +1636,22 @@ class JanelaGrafica(QtGui.QMainWindow):
                 self.ui.Offset_Senoidal_Amortecida.setText(str(self.offset))
             if Tipo_Curva == 2:
                 self.offset = 0                     #ACRESCENTADO#
-                
+
             if Tipo_Curva == 6:
                 self.offset = 0
         except:
             QtGui.QMessageBox.warning(self,'Atenção.','Verifique Valor do Parâmetro do Offset da Curva.',QtGui.QMessageBox.Ok)
             return False
-                
+
         try:                                    #Definindo Amplitude
             if lib.controle_fonte == 0:         #ACRESCENTADO# Seleciona a PUC
-                if Tipo_Curva == 0:               
+                if Tipo_Curva == 0:
                     Amp = self.Verificar_Limite_Corrente(2,abs(float(self.ui.Amplitude_Senoidal.text())),self.offset)
                     if (Amp == 'False'):
                         self.ui.Amplitude_Senoidal.setText('0')
                         return False
                     self.ui.Amplitude_Senoidal.setText(str(Amp))
-                if Tipo_Curva == 1:               
+                if Tipo_Curva == 1:
                     Amp = self.Verificar_Limite_Corrente(2,abs(float(self.ui.Amplitude_Senoidal_Amortecida.text())),self.offset)
                     if (Amp == 'False'):
                         self.ui.Amplitude_Senoidal_Amortecida.setText('0')
@@ -1671,13 +1671,13 @@ class JanelaGrafica(QtGui.QMainWindow):
                 self.ui.label_173.setEnabled(True)
                 self.ui.label_174.setVisible(True)
                 self.ui.label_174.setEnabled(True)
-                if Tipo_Curva == 0:               
+                if Tipo_Curva == 0:
                     Amp = self.Verificar_Limite_Corrente(2,abs(float(self.ui.Amplitude_Senoidal.text())),self.offset)
                     if (Amp == 'False'):
                         self.ui.Amplitude_Senoidal.setText('0')
                         return False
                     self.ui.Amplitude_Senoidal.setText(str(Amp))
-                if Tipo_Curva == 1:               
+                if Tipo_Curva == 1:
                     Amp = self.Verificar_Limite_Corrente(2,abs(float(self.ui.Amplitude_Senoidal_Amortecida.text())),self.offset)
                     if (Amp == 'False'):
                         self.ui.Amplitude_Senoidal_Amortecida.setText('0')
@@ -1694,7 +1694,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                     if (Amp == 'False'):
                         self.ui.Amplitude_Curva_Arbitraria.setText('0')
                         return False
-                    self.ui.Amplitude_Curva_Arbitraria.setText(str(Amp))                
+                    self.ui.Amplitude_Curva_Arbitraria.setText(str(Amp))
         except:
             QtGui.QMessageBox.warning(self,'Atenção.','Verifique Valor do Parâmetro da Amplitude de pico da Curva.',QtGui.QMessageBox.Ok)
             return False
@@ -1715,7 +1715,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         except:
             QtGui.QMessageBox.warning(self,'Atenção.','Verifique Valor do Parâmetro da Frequencia da Curva.',QtGui.QMessageBox.Ok)
             return False
-        
+
         try:                                     #Definindo Número de ciclos
             if Tipo_Curva == 0:
                 total_ciclo = int(self.ui.N_Ciclos_Senoidal.text())
@@ -1737,7 +1737,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             if Tipo_Curva == 6:
                 phase = 0
             if Tipo_Curva == 2:                                         #ACRESCENTADO#
-                phase = 0                                               
+                phase = 0
         except:
             QtGui.QMessageBox.warning(self,'Atenção.','Verifique Valor do Parâmetro da Defasagem da Curva.',QtGui.QMessageBox.Ok)
             return False
@@ -1748,7 +1748,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             if Tipo_Curva == 1:
                 P_Final = abs(float(self.ui.Posicao_Final_Senoidal_Amortecida.text()))
             if Tipo_Curva == 2:
-                P_Final = 0                                             #ACRESCENTADO# 
+                P_Final = 0                                             #ACRESCENTADO#
         except:
             QtGui.QMessageBox.warning(self,'Atenção.','Verifique Valor do Parâmetro da Posição Final da Curva.',QtGui.QMessageBox.Ok)
             return False
@@ -1761,7 +1761,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             QtGui.QMessageBox.warning(self,'Atenção.','Verifique Valor do Parâmetro do Amortecimento da Curva.',QtGui.QMessageBox.Ok)
             return False
 
-        if Tipo_Curva == 0 or Tipo_Curva == 1: 
+        if Tipo_Curva == 0 or Tipo_Curva == 1:
             self.offset = self.Valor_Equacao(0,float(self.offset),f_saida)
             Amp = self.Valor_Equacao(0,float(Amp),f_saida)
             Phi = numpy.radians(phase)
@@ -1782,12 +1782,12 @@ class JanelaGrafica(QtGui.QMainWindow):
                     x_ciclos = total_ciclo + 1
                 else:
                     x_ciclos = total_ciclo
-                    
+
                 i = 0
                 while i==0:
                     lib.Divisor_Puc = int((60e3)/((const.Pontos_Puc*freq)/(x_ciclos)))  #Cálculo do divisor
-                    
-                    
+
+
                     if Tipo_Curva == 0:  ## Equacao Ciclagem senoidal com defasagem
                         Amp = Amp/2
                         freq_puc = 60e3/(lib.Divisor_Puc+1)
@@ -1796,8 +1796,8 @@ class JanelaGrafica(QtGui.QMainWindow):
                         pontos = [max(min(p, 10.0),-10.0) for p in ([f(y) for y in range(const.Pontos_Puc)])]
                         ciclos_total = (const.Pontos_Puc/(freq_puc/freq))
                         lib.Ciclos_Puc = int((const.Pontos_Puc/ciclos_total)*total_ciclo)+1
-                            
-                        
+
+
                     if Tipo_Curva == 1: ## Equacao Ciclagem senoidal com defasagem e amortecimento
                         Amp = Amp/2
                         freq_puc = 60e3/(lib.Divisor_Puc+1)
@@ -1822,7 +1822,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                             self.createarray = numpy.asarray(self.celulas, dtype='float')
                         reshape = self.createarray.reshape((7,2))
                         self.DataTable = pd.DataFrame(reshape, index =self.indice,columns=['Tn[ms]','In[A]'])
-                                    
+
                         # Cálculo do Delta I e Delta T
                         self.timeTn = self.DataTable.iloc[:,0]
                         self.currIn = self.DataTable.iloc[:,1]
@@ -1858,10 +1858,10 @@ class JanelaGrafica(QtGui.QMainWindow):
                         n_vezes = numpy.array([])
                         n_vezes = 0
                         for n in range (int(const.Pontos_Puc/(freq_puc/freq))):
-                            equation = numpy.array([])                
+                            equation = numpy.array([])
                             for i in range (N_pontos):
                                 x = x + dt_ms
-                                temp_ms = numpy.append(temp_ms, x)     # Fórmula do tempo t(ms)                 
+                                temp_ms = numpy.append(temp_ms, x)     # Fórmula do tempo t(ms)
                                 if temp_ms[i] < 20:       # Região 1
                                     a0 = self.a0[0]
                                     a1 = self.a1[0]
@@ -1870,7 +1870,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                                     t0 = self.t0[0]
                                     self.f_t = a0+a1*(temp_ms[i]-t0)+a2*(temp_ms[i]-t0)**2+a3*(temp_ms[i]-t0)**3
                                     equation = numpy.append(equation, self.f_t)
-                    
+
                                 if 20 < temp_ms[i] < 300:   # Região 2
                                     a0 = self.a0[1]
                                     a1 = self.a1[1]
@@ -1916,8 +1916,8 @@ class JanelaGrafica(QtGui.QMainWindow):
                                     self.f_t = a0+a1*(temp_ms[i]-t0)+a2*(temp_ms[i]-t0)**2+a3*(temp_ms[i]-t0)**3
                                     equation = numpy.append(equation, self.f_t)
                             n_vezes = numpy.append(n_vezes,equation)
-                            
-                        
+
+
                         lista_pts = n_vezes.tolist()                # A lista de pontos de corrente para serem enviados à PUC
                         lista2 = lista_pts[1:]
                         pontos = [max(min(p, 10.0),-10.0) for p in ([lista2[y]/float(self.ui.Fator_Saida.text()) for y in range(total_ciclo*N_pontos)])]
@@ -1927,8 +1927,8 @@ class JanelaGrafica(QtGui.QMainWindow):
                             pontos = pontos + [fim]*remaining
                         ciclos_total = (const.Pontos_Puc/(freq_puc/freq)) # Tenho os 32768 pontos divididos pela frequência da PUC e pela frequência desejada (2Hz).
                         lib.Ciclos_Puc = int((const.Pontos_Puc/ciclos_total)*total_ciclo)+1
-                         
-                    
+
+
     ##                if Tipo_Curva == 6: ## Curva de ciclagem arbitraria do arquivo
     ##                    pontos = []
     ##                    for j in range(total_ciclo):
@@ -1936,24 +1936,24 @@ class JanelaGrafica(QtGui.QMainWindow):
     ##                            pontos.append(dados[k])
     ##                    pontos = numpy.asarray(pontos)
     ##
-    ##                    for j in range(len(pontos)): 
+    ##                    for j in range(len(pontos)):
     ##                        pontos[j] = pontos[j] * Amp   #converte array para corrente
     ##                        pontos[j] = self.Valor_Equacao(0,float(pontos[j]),f_saida)    #converte array para valores reais puc
     ##                    lib.Ciclos_Puc = (len(pontos))
-    ##                    
+    ##
     ##                    if (lib.Ciclos_Puc) < (const.Pontos_Puc):
     ##                        pontos = pontos.tolist()
     ##                        for j in range((const.Pontos_Puc)-(lib.Ciclos_Puc)):
     ##                            pontos.append(0)
     ##                    pontos = numpy.asarray(pontos)
-                                            
-        
+
+
                     if Tipo_Curva == 0 or Tipo_Curva == 1 or Tipo_Curva == 2:       #ACRESCENTADO Tipo_Curva == 2#
                         if (P_Final != 0 or phase != 0) and (P_Final != phase):
                             if P_Final > phase:
                                 ponto_final = P_Final - phase
                             else:
-                                ponto_final = 360 - (phase - P_Final)                            
+                                ponto_final = 360 - (phase - P_Final)
                             ponto_final = int(((lib.Ciclos_Puc/total_ciclo)/360)*ponto_final)+1
                             lib.Ciclos_Puc = lib.Ciclos_Puc + ponto_final
 
@@ -1961,9 +1961,9 @@ class JanelaGrafica(QtGui.QMainWindow):
                         x_ciclos+=1
                     else:
                         i=1
-                        
+
             ###################################################
-                    
+
             ######## Teste ponto de partida curva ciclagem ########
                     if Tipo_Curva == 0 or Tipo_Curva == 1:# or Tipo_Curva == 2:       #ACRESCENTADO Tipo_Curva == 2#
                         ponto_inicial = int((const.Pontos_Puc/total_ciclo)/8)
@@ -1980,9 +1980,9 @@ class JanelaGrafica(QtGui.QMainWindow):
         ##                        else:
         ##                            break
              #######################################################
-                        
+
                 checksum = lib.PUC.CreateChecksum(pontos)
-                
+
                 if checksum == False:
                     QtGui.QMessageBox.warning(self,'Atenção.','Falha nos Pontos.',QtGui.QMessageBox.Ok)
                     return False
@@ -1991,7 +1991,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         else:                           #ACRESCENTADO# seleciona a fonte digital
             try:
                 if Tipo_Curva == 0:     # Ciclagem senoidal com defasagem
-                
+
                     try:
                         sigType=0
                         mode=3
@@ -2002,11 +2002,11 @@ class JanelaGrafica(QtGui.QMainWindow):
                     except:
                         QtGui.QMessageBox.warning(self,'Atenção','Verifique configuração da fonte.',QtGui.QMessageBox.Ok)
                         return
-                            
+
                     try:
                         lib.Digital.Write_sigGen_Freq(float(freq))             #Enviando Frequencia
                         lib.Digital.Write_sigGen_Amplitude(float(Amp))         #Enviando Amplitude
-                        lib.Digital.Write_sigGen_Offset(float(self.offset))    #Enviando Offset 
+                        lib.Digital.Write_sigGen_Offset(float(self.offset))    #Enviando Offset
                     except:
                         QtGui.QMessageBox.warning(self,'Atenção.','Verifique valores de configuração da fonte.',QtGui.QMessageBox.Ok)
                         return
@@ -2015,7 +2015,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                     lib.Digital.ConfigSigGen(sigType, total_ciclo, phase, P_Final)
 
                 if Tipo_Curva == 1:  ## Ciclagem senoidal amortecida com defasagem e amortecimento
-                    
+
                     try:
                         sigType=4
                         mode=3
@@ -2026,7 +2026,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                     except:
                         QtGui.QMessageBox.warning(self,'Atenção','Verifique configuração da fonte.',QtGui.QMessageBox.Ok)
                         return
-                    
+
                     try:
                         lib.Digital.Write_sigGen_Freq(float(freq))             #Enviando Frequencia
                         lib.Digital.Write_sigGen_Amplitude(float(Amp))         #Enviando Amplitude
@@ -2055,7 +2055,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                         self.createarray = numpy.asarray(self.celulas, dtype='float')
                     reshape = self.createarray.reshape((7,2))
                     self.DataTable = pd.DataFrame(reshape, index =self.indice,columns=['Tn[ms]','In[A]'])
-                                
+
                     # Cálculo do Delta I e Delta T
                     self.timeTn = self.DataTable.iloc[:,0]
                     self.currIn = self.DataTable.iloc[:,1]
@@ -2091,10 +2091,10 @@ class JanelaGrafica(QtGui.QMainWindow):
                     n_vezes = numpy.array([])
                     n_vezes = 0
                     for n in range (int(total_ciclo)):
-                        equation = numpy.array([])                
+                        equation = numpy.array([])
                         for i in range (N_pontos):
                             x = x + dt_ms
-                            temp_ms = numpy.append(temp_ms, x)     # Fórmula do tempo t(ms)                 
+                            temp_ms = numpy.append(temp_ms, x)     # Fórmula do tempo t(ms)
                             if temp_ms[i] < self.timeTn[1]:       # Região 1
                                 a0 = self.a0[0]
                                 a1 = self.a1[0]
@@ -2103,7 +2103,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                                 t0 = self.t0[0]
                                 self.f_t = a0+a1*(temp_ms[i]-t0)+a2*(temp_ms[i]-t0)**2+a3*(temp_ms[i]-t0)**3
                                 equation = numpy.append(equation, self.f_t)
-                
+
                             if self.timeTn[1] < temp_ms[i] < self.timeTn[2]:   # Região 2
                                 a0 = self.a0[1]
                                 a1 = self.a1[1]
@@ -2149,7 +2149,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                                 self.f_t = a0+a1*(temp_ms[i]-t0)+a2*(temp_ms[i]-t0)**2+a3*(temp_ms[i]-t0)**3
                                 equation = numpy.append(equation, self.f_t)
                         n_vezes = numpy.append(n_vezes,equation)
-                          
+
                     lista_pts = n_vezes.tolist()                # A lista de pontos de corrente para serem enviados à PUC
                     lista2 = lista_pts[1:]
                     pontos = [max(min(p, 10.0),-10.0) for p in ([lista2[y]/float(self.ui.Fator_Saida.text()) for y in range(total_ciclo*N_pontos)])]
@@ -2165,7 +2165,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                 return True
             except:
                 return False
-            
+
 
     def Curva_Quadrupolo(self):
         pontos=[]
@@ -2179,7 +2179,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         try:
             dados_corrente = self.Converter_Corrente_Arbitraria(self.ui.Corrente_Arbitraria_PUC.toPlainText(),0) ###
             for i in range(len(dados_corrente)):
-                dados_corrente[i]=self.Verificar_Limite_Corrente(1,dados_corrente[i])                
+                dados_corrente[i]=self.Verificar_Limite_Corrente(1,dados_corrente[i])
                 if (dados_corrente[i] == 'False'):
                     return
             self.ui.Corrente_Arbitraria_PUC.setPlainText(self.Recuperar_Valor(0,str(dados_corrente)))
@@ -2192,7 +2192,7 @@ class JanelaGrafica(QtGui.QMainWindow):
 
         for i in range(len(dados_corrente)):
             dados_corrente[i]=self.Valor_Equacao(2,(dados_corrente[i]),f_saida)
-        
+
         for i in range(len(dados_corrente)):
             dados_corrente[i] = dados_corrente[i]/10
 
@@ -2205,19 +2205,19 @@ class JanelaGrafica(QtGui.QMainWindow):
                 pontos.append(round((dados_corrente[k]),6))
         for j in range(int((len(dados_corrente))/2)):
             pontos.append(0)
-            
+
         tempo_ciclagem = .5 * (int(str(self.ui.Ciclos_Curva_Quadrupolo.text()))+1)
         resp=lib.GPIB.Config_Gerador_Ciclagem_Quadrupolo(1/tempo_ciclagem,pontos)
-        
+
         if resp==True:
             time.sleep(tempo_ciclagem + (int(str(self.ui.Ciclos_Curva_Quadrupolo.text())))/24)
             lib.GPIB.Saida_Gerador(0)
             QtGui.QMessageBox.information(self,'Aviso.','Ciclagem Concluida com sucesso.',QtGui.QMessageBox.Ok)
         else:
             lib.GPIB.Saida_Gerador(0)
-            QtGui.QMessageBox.information(self,'Aviso.','Falha na Ciclagem.',QtGui.QMessageBox.Ok)            
+            QtGui.QMessageBox.information(self,'Aviso.','Falha na Ciclagem.',QtGui.QMessageBox.Ok)
 
-        
+
     def Ciclagem(self,index=0):
         resp = self.Verificar_Dados_Curva(1)
         if resp == False:
@@ -2246,18 +2246,18 @@ class JanelaGrafica(QtGui.QMainWindow):
                 if Tipo_Curva == 2:                 #ACRESCENTADO#
                     final = lib.Ponto_Inicial_Curva
                 if Tipo_Curva == 6:
-                    final = 0       
+                    final = 0
             except:
                 QtGui.QMessageBox.warning(self,'Atenção.','Dados Incorretos.',QtGui.QMessageBox.Ok)
                 return
-            
+
             self.ui.tabWidget_2.setEnabled(False)
             self.ui.coletar.setEnabled(False)
             self.ui.Carregar_Config_Fonte.setEnabled(False)
             self.ui.Corrente_Atual.setEnabled(False)
             QtGui.QApplication.processEvents()
-            
-            ### Cálculo Ciclos ### 
+
+            ### Cálculo Ciclos ###
             ciclos = int((const.Pontos_Puc/const.Clock_Puc)*freq)
             rep_int = int(ciclo_final/ciclos)
             rep_float = (ciclo_final/ciclos)-int(ciclo_final/ciclos)
@@ -2265,7 +2265,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             n_ciclos = int(ciclos * rep_float)
             ponto_final = (int((lib.Ciclos_Puc/ciclos)*n_ciclos)+((lib.Ciclos_Puc*3)/(ciclos*4)-(75)))
             ####################
-            
+
             lib.Fonte_Pronta = 0
             proc_ciclagem = Ciclagem_Fonte(final,atual,passo,tempo,rep_int,delay,n_ciclos,ponto_final,freq,index)
             proc_ciclagem.run()
@@ -2278,21 +2278,21 @@ class JanelaGrafica(QtGui.QMainWindow):
                     lib.Digital.EnableSigGen()
                     time.sleep(.2)
 ##                    while (abs(float(lib.Digital.Read_iLoad1())) > 5e-04):
-##                        self.ui.tabWidget_2.setEnabled(False) 
+##                        self.ui.tabWidget_2.setEnabled(False)
 ##                        self.ui.coletar.setEnabled(False)
 ##                        self.ui.Carregar_Config_Fonte.setEnabled(False)
 ##                        self.ui.Corrente_Atual.setEnabled(False)
 ##                        QtGui.QApplication.processEvents()
-                    
+
                     deadline = time.monotonic() + (1/float(self.ui.Frequencia_Senoidal_Amortecida.text())*float(self.ui.N_Ciclos_Senoidal_Amortecida.text()))
                     while time.monotonic() < deadline:
-                        self.ui.tabWidget_2.setEnabled(False) 
+                        self.ui.tabWidget_2.setEnabled(False)
                         self.ui.coletar.setEnabled(False)
                         self.ui.Carregar_Config_Fonte.setEnabled(False)
                         self.ui.Corrente_Atual.setEnabled(False)
                         QtGui.QApplication.processEvents()
 
-                   
+
                     QtGui.QMessageBox.information(self,'Ciclagem.','Processo de Ciclagem Concluído com Sucesso.',QtGui.QMessageBox.Ok)
                     lib.Digital.DisableSigGen()
                     self.ui.tabWidget_2.setEnabled(True)
@@ -2303,11 +2303,11 @@ class JanelaGrafica(QtGui.QMainWindow):
 
                 if Tipo_Curva == 2:
                     self.Digital.WfmRefUpdate()
-                    
+
             except:
                 QtGui.QMessageBox.warning(self,'Atenção.','Saída do gerador de sinais não ligada.',QtGui.QMessageBox.Ok)
                 return
-        
+
     def Calibrar_Fonte(self):
         Pontos_Desejados = 6
         ret = QtGui.QMessageBox.question(self,'Calibração da Fonte.','Deseja Iniciar o Processo de Calibração da Fonte?\nProcesso pode levar alguns minutos.',QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,QtGui.QMessageBox.No)
@@ -2316,7 +2316,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         if self.ui.label_multimetro.text()!='Conectado':
             QtGui.QMessageBox.warning(self,'Atenção.','Conectar Multimetro GPIB.\nTente Novamente.',QtGui.QMessageBox.Ok)
             return
-        
+
         QtGui.QApplication.processEvents()
 
         try:
@@ -2336,7 +2336,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         except:
             QtGui.QMessageBox.warning(self,'Atenção.','Dados Incorretos.',QtGui.QMessageBox.Ok)
             return
-        
+
         if Corrente_Final < Corrente_Inicial:
             QtGui.QMessageBox.warning(self,'Atenção.','Corrente Final Deve ser Maior que Corrente Inicial.',QtGui.QMessageBox.Ok)
             return
@@ -2352,7 +2352,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             lib.Fonte_Calibrada = [0,0]
             self.ui.groupBox_5.setEnabled(False)
             QtGui.QApplication.processEvents()
-            
+
             self.Rampa(0,lib.PUC.ReadAD(),((float(self.ui.Amplitude_Linear.text()))/f_saida),(float(self.ui.Tempo_Linear.text()))) ## Zerar corrente fonte
             Correntes_Calibracao = numpy.arange(Corrente_Inicial,Corrente_Final,(Corrente_Final-Corrente_Inicial)/N_Pontos).tolist()
             if Correntes_Calibracao[len(Correntes_Calibracao)-1] < Corrente_Final:
@@ -2378,7 +2378,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             lib.reta_escrita.reverse()
             lib.reta_escrita = numpy.asarray(lib.reta_escrita)
             lib.Fonte_Calibrada = [0,1]
-             
+
             for j in range(Repeticao):
                 for i in range(len(Correntes_Calibracao)):
                     self.Rampa(self.Valor_Equacao(0,Correntes_Calibracao[i]*f_saida,f_saida),lib.PUC.ReadAD(),((float(self.ui.Amplitude_Linear.text()))/f_saida),(float(self.ui.Tempo_Linear.text())))
@@ -2394,7 +2394,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             lib.reta_leitura = lib.reta_leitura.tolist()
             lib.reta_leitura.reverse()
             lib.reta_leitura = numpy.asarray(lib.reta_leitura)
-            
+
             QtGui.QMessageBox.information(lib.Janela,'Aviso.','Processo de Calibração Concluído com Sucesso.',QtGui.QMessageBox.Ok)
             self.ui.groupBox_5.setEnabled(True)
             lib.Fonte_Calibrada = [1,1]
@@ -2404,7 +2404,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             lib.Fonte_Calibrada = [0,0]
             self.ui.groupBox_5.setEnabled(False)
             QtGui.QApplication.processEvents()
-            
+
             self.Rampa(0,lib.Digital.Read_iLoad1(),((float(self.ui.Amplitude_Linear.text()))/f_saida),(float(self.ui.Tempo_Linear.text()))) ## Zerar corrente fonte
             Correntes_Calibracao = numpy.arange(Corrente_Inicial,Corrente_Final,(Corrente_Final-Corrente_Inicial)/N_Pontos).tolist()
             if Correntes_Calibracao[len(Correntes_Calibracao)-1] < Corrente_Final:
@@ -2430,7 +2430,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             lib.reta_escrita.reverse()
             lib.reta_escrita = numpy.asarray(lib.reta_escrita)
             lib.Fonte_Calibrada = [0,1]
-             
+
             for j in range(Repeticao):
                 for i in range(len(Correntes_Calibracao)):
                     self.Rampa(self.Valor_Equacao(0,Correntes_Calibracao[i]*f_saida,f_saida),lib.Digital.Read_iLoad1(),((float(self.ui.Amplitude_Linear.text()))/f_saida),(float(self.ui.Tempo_Linear.text())))
@@ -2446,7 +2446,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             lib.reta_leitura = lib.reta_leitura.tolist()
             lib.reta_leitura.reverse()
             lib.reta_leitura = numpy.asarray(lib.reta_leitura)
-            
+
             QtGui.QMessageBox.information(lib.Janela,'Aviso.','Processo de Calibração Concluído com Sucesso.',QtGui.QMessageBox.Ok)
             self.ui.groupBox_5.setEnabled(True)
             lib.Fonte_Calibrada = [1,1]
@@ -2462,7 +2462,7 @@ class JanelaGrafica(QtGui.QMainWindow):
 ##        if lib.procura_indice_flag == 1:
 ##            QtGui.QMessageBox.information(lib.Janela,'Aviso.','Referenciar Integrador Primeiro.',QtGui.QMessageBox.Ok) ## Verifica sistema referenciado
 ##            return
-        
+
         lib.integrador.Enviar('ISC,A,1')    ## Fechar rele de coleta de dados
         lib.integrador.Enviar('IMD,0')      ## Configura Sequencia de descarregamento de dados apos parada.
         lib.integrador.Enviar(lib.integrador.PDITriggerTimer)   ## Configura integrador para trigger interno.
@@ -2491,16 +2491,16 @@ class JanelaGrafica(QtGui.QMainWindow):
         valor = valor.strip(' A\r\n\x1a')
         pontos_integrador = valor.split(' A\r\n')
         lib.integrador.Enviar('ISC,A,1')
-        
+
 ##        self.CONFIGURARINTEGRADOR(1)  ## Retorna configuracao do integrador para encoder
-        
+
         for i in range(len(pontos_integrador)):
             try:
                 pontos_integrador[i] = (int(pontos_integrador[i])*(10**(-8)))
             except:
                 QtGui.QMessageBox.information(lib.Janela,'Aviso.','Falha no recebimento de Dados.\n    Repita o processo.',QtGui.QMessageBox.Ok)
                 return
-            
+
         pontos_integrador = numpy.array(pontos_integrador)
         #############################################################################
         resp=[] ## Transforma curva pontos integrador para valor unitario
@@ -2510,13 +2510,13 @@ class JanelaGrafica(QtGui.QMainWindow):
         for i in range(len(pontos_integrador)):
             pontos_integrador[i] = pontos_integrador[i]/valor
         #############################################################################
-            
+
         eixo_x = numpy.linspace(0,len(pontos_integrador)*dt,len(pontos_integrador))
         for i in range(len(eixo_x)):
             eixo_x[i] = eixo_x[i]/1000 ## Transformar eixo x de pontos para segundos. Dividido frequencia clock interno integrador
         plt.plot(eixo_x,pontos_integrador)
 ##        plt.show()
-  
+
         if lib.Modelo_PUC == 0:
             pontos_PUC = lib.PUC.ReadCaptured()
             pontos_PUC = pontos_PUC[:-(len(pontos_PUC)-lib.Ciclos_Puc)]
@@ -2542,7 +2542,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             for i in range(len(eixo_x)):
                 eixo_x[i] = eixo_x[i]/4000 ## Transformar eixo x de pontos para segundos. Dividido frequencia clock interno integrador
             plt.plot(eixo_x,pontos_PUC)
-            
+
         else:
             pontos_PUC = lib.PUC.ReadCaptured(lib.Ciclos_Puc)
             pontos_PUC = numpy.array(pontos_PUC)
@@ -2562,7 +2562,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             for i in range(len(eixo_x)):
                 eixo_x[i] = eixo_x[i]/(6e4/(lib.Divisor_Puc+1)) ## Transformar eixo x de pontos para segundos. Dividido frequencia clock interno integrador
             plt.plot(eixo_x,pontos_PUC)
-            
+
         index='x'
         f = open('pontos_integrador_'+str(index)+'.txt','w')
         for i in range(len(pontos_integrador)):
@@ -2574,11 +2574,11 @@ class JanelaGrafica(QtGui.QMainWindow):
             f.write(str(pontos_PUC[i]))
             f.write('\n')
         f.close()
-        
+
         lib.Analise_Freq = 0
         plt.show()
 
-    
+
     ########### ABA 5: GPIB ###########
 
     def Habilitar_GPIB(self):
@@ -2642,37 +2642,37 @@ class JanelaGrafica(QtGui.QMainWindow):
             self.ch.append('101')
         else:
             self.ui.groupBox_41.setEnabled(False)
-            
+
         if self.ui.checkCH_2.isChecked():
             self.ui.groupBox_42.setEnabled(True)
             self.ch.append('102')
         else:
             self.ui.groupBox_42.setEnabled(False)
-            
+
         if self.ui.checkCH_3.isChecked():
             self.ui.groupBox_43.setEnabled(True)
             self.ch.append('103')
         else:
             self.ui.groupBox_43.setEnabled(False)
-            
+
         if self.ui.checkCH_4.isChecked():
             self.ui.groupBox_44.setEnabled(True)
             self.ch.append('104')
         else:
             self.ui.groupBox_44.setEnabled(False)
-            
+
         if self.ui.checkCH_5.isChecked():
             self.ui.groupBox_45.setEnabled(True)
             self.ch.append('105')
         else:
             self.ui.groupBox_45.setEnabled(False)
-            
+
         if self.ui.checkCH_6.isChecked():
             self.ui.groupBox_46.setEnabled(True)
             self.ch.append('106')
         else:
             self.ui.groupBox_46.setEnabled(False)
-            
+
         if self.ui.checkCH_7.isChecked():
             self.ui.groupBox_47.setEnabled(True)
             self.ch.append('107')
@@ -2703,7 +2703,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         except:
             QtGui.QMessageBox.warning(self,'Atenção.','Selecione pelo menos 1 canal.',QtGui.QMessageBox.Ok)
             return
-                                     
+
     def Multicanal(self):
         try:
             value = lib.GPIB.Coleta_Multicanal()
@@ -2754,13 +2754,13 @@ class JanelaGrafica(QtGui.QMainWindow):
         lib.motor.ConfModo(endereco,modo,sentido)
         if lib.motor.ready(endereco):
             lib.motor.MoverMotor(endereco)
-            
+
     def PARARMOTORES(self):
             lib.parartudo = 1
             lib.motor.PararMotor(int(lib.endereco_pararmotor))
             time.sleep(2)
             lib.parartudo = 0
-        
+
     def PARARMOTORES_1(self):
             lib.parartudo = 1
             lib.motor.PararMotor(int(lib.endereco_pararmotor))
@@ -2778,7 +2778,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         if self.ui.EndDriver_2.currentIndex() == 1:
             self.ui.sentido.setItemText(0, "Soltar")
             self.ui.sentido.setItemText(1, "Tracionar")
-        
+
 
     ########### ABA 7: Bobina ###########
 
@@ -2807,13 +2807,13 @@ class JanelaGrafica(QtGui.QMainWindow):
         else:
             QtGui.QMessageBox.warning(self,'Atenção.','Arquivo Incorreto.',QtGui.QMessageBox.Ok)
             return
-        
+
         for i in range(len(leitura)):
             c = leitura[i].split('\t')
             dados[i] = c[1]
-            
+
         try:
-            self.ui.BobinaNome.setText(dados[0])            
+            self.ui.BobinaNome.setText(dados[0])
             self.ui.nespiras.setText(dados[1])
             self.ui.raio1.setText(dados[2])
             self.ui.raio2.setText(dados[3])
@@ -2845,7 +2845,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             arquivo = QtGui.QFileDialog.getSaveFileName(self, 'Save File - Dados Bobina', nome,'Data files (*.dat);;Text files (*.txt)')
         except:
             return
-        
+
         Ne = str(self.ui.nespiras.text())
         Neb = str(self.ui.nespirasb.text())
         r1 = str(self.ui.raio1.text())
@@ -2891,7 +2891,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             return
         ret = QtGui.QMessageBox.question(self,'Montar Bobina.','Enviar Mesa Longitudinal para Referência.\nDeseja continuar?',QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,QtGui.QMessageBox.No)
         if ret == QtGui.QMessageBox.Yes:
-            lib.motor.MoverMotorFimdeCursoNeg(const.motorC_endereco,1,5)        
+            lib.motor.MoverMotorFimdeCursoNeg(const.motorC_endereco,1,5)
             while not lib.motor.ready(const.motorC_endereco) and lib.parartudo == 0:
                 time.sleep(0.5)
         else:
@@ -2914,7 +2914,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         if ret == QtGui.QMessageBox.Yes:
             self.posicao_angular(const.pos_ang, 1)
         else:
-            return     
+            return
         ret = QtGui.QMessageBox.question(self,'Montar Bobina.','Posicionar a Bobina Dentro do Ima.\nDeseja continuar?',QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,QtGui.QMessageBox.No)
         if ret == QtGui.QMessageBox.No:
             return
@@ -2922,9 +2922,9 @@ class JanelaGrafica(QtGui.QMainWindow):
         if ret == QtGui.QMessageBox.Yes:
             self.Mover_Motor_A(const.premont_A,5)
         else:
-            return    
+            return
         while lib.Motor_Posicao == 0:
-            time.sleep(.5)          
+            time.sleep(.5)
         ret = QtGui.QMessageBox.question(self,'Montar Bobina.','Enviar Mesa A para Posição Zero.\nDeseja continuar?',QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,QtGui.QMessageBox.No)
         if ret == QtGui.QMessageBox.Yes:
             self.Mover_Motor_A(0,1)
@@ -2953,7 +2953,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         if ret == QtGui.QMessageBox.Yes:
             lib.motor.ConfMotor(const.motorC_endereco,1,5,int(const.pos_long*const.passos_mmC))
             lib.motor.ConfModo(const.motorC_endereco,0,const.avancoC)
-            lib.motor.MoverMotor(const.motorC_endereco)            
+            lib.motor.MoverMotor(const.motorC_endereco)
             while not lib.motor.ready(const.motorC_endereco) and lib.parartudo == 0:
                 time.sleep(0.5)
         else:
@@ -2970,8 +2970,8 @@ class JanelaGrafica(QtGui.QMainWindow):
                 time.sleep(0.5)
         else:
             return
-        QtGui.QMessageBox.critical(self,'Montar Bobina.','Processo de montagem da Bobina Finalizado.',QtGui.QMessageBox.Ok)        
-       
+        QtGui.QMessageBox.critical(self,'Montar Bobina.','Processo de montagem da Bobina Finalizado.',QtGui.QMessageBox.Ok)
+
     def DESMONTAR(self):
         ret = QtGui.QMessageBox.question(self,'Desmontar Bobina.','Rotina de desmontagem da bobina será inicializada.\nDeseja continuar?',QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,QtGui.QMessageBox.No)
         if ret == QtGui.QMessageBox.No:
@@ -3000,7 +3000,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         if ret == QtGui.QMessageBox.Yes:
             self.Mover_Motor_B(const.premont_B,1)
         else:
-            return    
+            return
         while lib.Motor_Posicao == 0:
             time.sleep(.5)
         ret = QtGui.QMessageBox.question(self,'Desmontar Bobina.','Desligar o conector na Bobina.\nDeseja continuar?',QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,QtGui.QMessageBox.No)
@@ -3010,21 +3010,21 @@ class JanelaGrafica(QtGui.QMainWindow):
         if ret == QtGui.QMessageBox.Yes:
             self.Mover_Motor_B(const.final_B,5)
         else:
-            return    
+            return
         while lib.Motor_Posicao == 0:
-            time.sleep(.5)  
+            time.sleep(.5)
         ret = QtGui.QMessageBox.question(self,'Desmontar Bobina.','Enviar Mesa A para Posição de Pré Desmontagem.\nDeseja continuar?',QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,QtGui.QMessageBox.No)
         if ret == QtGui.QMessageBox.Yes:
             self.Mover_Motor_A(const.premont_A,1)
         else:
-            return    
+            return
         while lib.Motor_Posicao == 0:
-            time.sleep(.5)         
+            time.sleep(.5)
         ret = QtGui.QMessageBox.question(self,'Desmontar Bobina.','Enviar Mesa A para Posição Final.\nDeseja continuar?',QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,QtGui.QMessageBox.No)
         if ret == QtGui.QMessageBox.Yes:
             self.Mover_Motor_A(const.final_A,5)
         else:
-            return    
+            return
         while lib.Motor_Posicao == 0:
             time.sleep(.5)
         ret = QtGui.QMessageBox.question(self,'Desmontar Bobina.','Retirar a Bobina de Dentro do Ima.\nDeseja continuar?',QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,QtGui.QMessageBox.No)
@@ -3048,12 +3048,12 @@ class JanelaGrafica(QtGui.QMainWindow):
         self.ui.TipoIma.setCurrentIndex(1)
         self.ui.Nome_Ima.setText('Referenciando Bobina: ' + str(self.ui.BobinaNome.text()))
         refinar=0
-        
-        while refinar < (repeticao+1):    
+
+        while refinar < (repeticao+1):
             angulo_ref=numpy.zeros(int(repeticao))
             Nn_ref=numpy.zeros(int(repeticao))
             Sn_ref=numpy.zeros(int(repeticao))
-            
+
             if refinar>0:
                 self.ui.pulsos_trigger.setText(str(int(Pulso_final)))
             for i in range(repeticao):
@@ -3070,7 +3070,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             Nn_final = numpy.mean(Nn_ref,axis=0)
             Sn_final = numpy.mean(Sn_ref,axis=0)
             Pulsos = int(round((Pulsos_encoder * angulo_final)/(2*numpy.pi),0))
-            
+
             if refinar==0:
                 if Nn_final>=0:
                     if Sn_final>=0:
@@ -3087,19 +3087,19 @@ class JanelaGrafica(QtGui.QMainWindow):
                     Pulso_final = int(Pulso_final + Pulsos) ## Certo
                 else:
                     break
-                
+
             refinar+=1
 
         if refinar==(repeticao+1):
             QtGui.QMessageBox.critical(self,'Referenciar Bobina.','Bobina Não Referenciada.\nVerificar sistema manualmente.',QtGui.QMessageBox.Ok)
             lib.Ref_Bobina = 0
             return
-        
+
         lib.Ref_Bobina = 0
         self.SALVABOBINA()
         QtGui.QMessageBox.information(self,'Referenciar Bobina.','Bobina Referenciada com Sucesso.',QtGui.QMessageBox.Ok)
         self.ui.Nome_Ima.setText('')
-        
+
     ########### ABA 8: Integrador ###########
 
     def SALVAR_DEFAULT(self):
@@ -3154,7 +3154,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         f.write('Posicao de Premontagem A\t' + str(const.premont_A) + '\n')
         f.write('Posicao de Premontagem B\t' + str(const.premont_B) + '\n')
         f.write('Posicao de Final A\t' + str(const.final_A) + '\n')
-        f.write('Posicao de Final B\t' + str(const.final_B) + '\n')        
+        f.write('Posicao de Final B\t' + str(const.final_B) + '\n')
         f.write('Posicao angular montagem\t' + str(const.pos_ang) + '\n')
         f.write('Posicao longitudinal montagem\t' + str(const.pos_long) + '\n')
         f.write('Posicao vertical\t' + str(const.pos_ver) + '\n')
@@ -3162,7 +3162,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         f.write('Endereço GPIB Gerador\t' + str(gpib_gerador)+ '\n')
         f.write('Endereço GPIB Multimetro\t' + str(gpib_multimetro))
         f.close()
-                
+
     def POSICIONAR(self):
         try:
             posicao = int(self.ui.posicao_angular.text())
@@ -3207,7 +3207,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         lib.Janela.ui.coletar.setEnabled(True)
         lib.Janela.ui.groupBox_2.setEnabled(True)
 
-            
+
     def Tabela(self):
 ##        self.ui.tabela.clear()
         TipoIma = lib.Janela.ui.TipoIma.currentIndex()
@@ -3238,25 +3238,59 @@ class JanelaGrafica(QtGui.QMainWindow):
         item.setText(Text)
 
     def deslocamento(self):
-        ordens = numpy.array([])
-        posicao = int(lib.Janela.ui.TipoIma.currentIndex())
-        for i in range(posicao):
-            self.ui.tabela.setCurrentCell(i,0) 
-            v_Nn = self.ui.tabela.currentItem().text() #valores Nn
-            self.ui.tabela.setCurrentCell(i,2)             
-            v_Sn = self.ui.tabela.currentItem().text() #valores Sn
-            ordens = numpy.append(ordens, float(v_Nn))
-            ordens = numpy.append(ordens, float(v_Sn))
-        if posicao == 2:
-            calc_X = ordens[0]/ordens[2]/1e-06              #cálculo deslocamento X => (Dipolo Nn / Quadrupolo Nn)
-            calc_Y = ordens[1]/ordens[2]/1e-06              #cálculo deslocamento Y => (Dipolo Sn / Quadrupolo Nn)
-        elif posicao == 3:
-            calc_X = ordens[2]/(2*ordens[4])/1e-06              #cálculo deslocamento X => (Quadrupolo Nn / (2*Sextupolo Nn))
-            calc_Y = ordens[3]/(2*ordens[4])/1e-06              #cálculo deslocamento Y => (Quadrupolo Sn / (2*Sextupolo Nn))
-            
-        self.ui.desl_X.setText(str(calc_X))
-        self.ui.desl_Y.setText(str(calc_Y))
-    
+        main_harmonic = int(lib.Janela.ui.TipoIma.currentIndex())
+
+        if main_harmonic > 1:
+            if lib.Janela.ui.ch_Skew.isChecked():
+                main_column = 0
+                perp_column = 2
+                dy_sign = 1
+            else:
+                main_column = 2
+                perp_column = 0
+                dy_sign = -1
+
+            item = self.ui.tabela.item(main_harmonic-1, main_column)
+            main_multipole = float(item.text())
+
+            item = self.ui.tabela.item(main_harmonic-2, main_column)
+            prev_multipole = float(item.text())
+
+            item = self.ui.tabela.item(main_harmonic-2, perp_column)
+            prev_perp_multipole = float(item.text())
+
+            dx = (1/(main_harmonic-1))*(prev_multipole/main_multipole)
+            dy = (dy_sign)*(1/(main_harmonic-1))*(
+                prev_perp_multipole/main_multipole)
+            dx_mm = dx*1e-06
+            dy_mm = dy*1e-06
+
+            self.ui.desl_X.setText(str(dx_mm))
+            self.ui.desl_Y.setText(str(dy_mm))
+
+        else:
+            self.ui.desl_X.setText("")
+            self.ui.desl_Y.setText("")
+
+        # ordens = numpy.array([])
+        # posicao = int(lib.Janela.ui.TipoIma.currentIndex())
+        # for i in range(posicao):
+        #     self.ui.tabela.setCurrentCell(i,0)
+        #     v_Nn = self.ui.tabela.currentItem().text() #valores Nn
+        #     self.ui.tabela.setCurrentCell(i,2)
+        #     v_Sn = self.ui.tabela.currentItem().text() #valores Sn
+        #     ordens = numpy.append(ordens, float(v_Nn))
+        #     ordens = numpy.append(ordens, float(v_Sn))
+        # if posicao == 2:
+        #     calc_X = ordens[0]/ordens[2]/1e-06              #cálculo deslocamento X => (Dipolo Nn / Quadrupolo Nn)
+        #     calc_Y = ordens[1]/ordens[2]/1e-06              #cálculo deslocamento Y => (Dipolo Sn / Quadrupolo Nn)
+        # elif posicao == 3:
+        #     calc_X = ordens[2]/(2*ordens[4])/1e-06              #cálculo deslocamento X => (Quadrupolo Nn / (2*Sextupolo Nn))
+        #     calc_Y = ordens[3]/(2*ordens[4])/1e-06              #cálculo deslocamento Y => (Quadrupolo Sn / (2*Sextupolo Nn))
+        #
+        # self.ui.desl_X.setText(str(calc_X))
+        # self.ui.desl_Y.setText(str(calc_Y))
+
     def ProcuraIndiceEncoder(self):
         tempoespera = 0.1
 
@@ -3268,7 +3302,7 @@ class JanelaGrafica(QtGui.QMainWindow):
 
         #lib.motor.ConfMotor(lib.endereco,1,1,lib.passos_volta*3)
         lib.motor.ConfMotor(lib.endereco,10,10,lib.passos_volta)
-        
+
         lib.motor.ConfModo(lib.endereco,0,lib.sentido)
         lib.motor.MoverMotor(lib.endereco)
         while not lib.motor.ready(lib.endereco) and not lib.parartudo:
@@ -3288,12 +3322,12 @@ class JanelaGrafica(QtGui.QMainWindow):
             lib.motor.ConfMotor(lib.endereco,10,10,passos)
             lib.motor.ConfModo(lib.endereco,0,0)
             lib.motor.MoverMotor(lib.endereco)
-            
+
     def Start_Config(self):
         bit = 0
         lib.integrador.Enviar('ISC,A,1')
         self.CONFIGURARINTEGRADOR(bit)
-        
+
     def CONFIGURARINTEGRADOR(self,bit):
         lib.ganho = self.ui.ganho.currentIndex()
         lib.ganho = const.ganhos[lib.ganho]
@@ -3305,7 +3339,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             lib.aceleracao = float(self.ui.aceleracao_int.text())
         except:
             QtGui.QMessageBox.critical(self,'Erro.','Não foi possível converter os valores de velocidade e aceleração.',QtGui.QMessageBox.Ok)
-            return        
+            return
         try:
             lib.pulsos_encoder = (int(self.ui.pulsos_encoder.text())) * 4
             lib.voltas_offset = int(self.ui.voltas_offset.text()) + int(self.ui.descarte_inicial.text()) + int(self.ui.descarte_final.text()) + 1  # n voltas descarte_inicial_final aceleracao; 1 filtro de erro transmissão de dados
@@ -3337,7 +3371,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             elif lib.sentido == 1:
                 lib.integrador.Configurar_Integrador('+',lib.ganho, lib.pontos_integracao, lib.pulsos_encoder, lib.pulsos_trigger, lib.voltas_offset)
 
-        if lib.procura_indice_flag == 1:           
+        if lib.procura_indice_flag == 1:
 ##            self.Motor_Manual(lib.endereco, lib.velocidade, lib.aceleracao, 10, lib.sentido, 0)   #Voltas de acomodamento
             if lib.sentido == 0:
                 lib.integrador.Configurar_Integrador('-',lib.ganho, lib.pontos_integracao, lib.pulsos_encoder, lib.pulsos_trigger, lib.voltas_offset)
@@ -3351,7 +3385,7 @@ class JanelaGrafica(QtGui.QMainWindow):
 ##            self.ui.Zerar_Offset.setEnabled(True)
             self.ui.label_137.setText('OK')
             QtGui.QApplication.processEvents()
-            
+
         if self.ui.TipoIma.currentIndex() == 0:
             self.ui.filtro_voltas.setEnabled(False)
         else:
@@ -3404,7 +3438,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         self.ui.label_status_5.setText(str(x[5]).zfill(8))
         self.ui.label_status_6.setText(str(x[6]).zfill(8))
         self.ui.label_status_7.setText(str(x[7]).zfill(8))
-        
+
 
 
 
@@ -3415,7 +3449,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             if ret == QtGui.QMessageBox.Yes:
                 self.ui.ganho.setCurrentIndex(6)
                 QtGui.QApplication.processEvents()
-                
+
 
     def Desalinhamento(self):
         lib.display.LerDisplay()
@@ -3428,8 +3462,8 @@ class JanelaGrafica(QtGui.QMainWindow):
                 return False
             else:
                 return True
-            
-        
+
+
 
 ########################## Corretoras ###############################
 
@@ -3446,7 +3480,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             QtGui.QMessageBox.information(self,'Aviso.','Ciclagem Concluida com sucesso.',QtGui.QMessageBox.Ok)
         else:
             lib.GPIB.Saida_Gerador(0)
-            QtGui.QMessageBox.information(self,'Aviso.','Falha na Ciclagem.',QtGui.QMessageBox.Ok)            
+            QtGui.QMessageBox.information(self,'Aviso.','Falha na Ciclagem.',QtGui.QMessageBox.Ok)
         self.ui.Ciclagem_Corretora.setEnabled(True)
         self.ui.coletar.setEnabled(True)
 
@@ -3462,7 +3496,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             self.ui.C_Sucessivas.setEnabled(True)
             if (lib.PUC_Conectada == 1):
                 self.ui.Chk_Auto.setEnabled(True)
-                
+
         if self.ui.Hab_Curva_Quadrupolo.isChecked():
             self.ui.Ciclar_Curva_Quadrupolo.setEnabled(True)
             self.ui.Ciclos_Curva_Quadrupolo.setEnabled(True)
@@ -3475,7 +3509,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         if self.ui.Hab_Selecao.isChecked():
             self.ui.Selecao_Corrente_Arbitraria_PUC.setEnabled(True)
         else:
-            self.ui.Selecao_Corrente_Arbitraria_PUC.setEnabled(False)        
+            self.ui.Selecao_Corrente_Arbitraria_PUC.setEnabled(False)
 
     def Rampa_Corretora(self,final,atual,passo,tempo):
         try:
@@ -3505,14 +3539,14 @@ class JanelaGrafica(QtGui.QMainWindow):
                     return True
             except:
                 return False
-            
+
 
 
 ########################## Corretoras ###############################
 
 
-            
-                
+
+
     def Coleta_Suc_Manual(self):
         if self.ui.C_Sucessivas.isChecked():
             self.ui.N_Coletas_Manual.setEnabled(True)
@@ -3524,7 +3558,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             self.ui.label_22.setEnabled(False)
             self.ui.Hab_Corretora.setEnabled(True)
             if (lib.PUC_Conectada == 1):
-                self.ui.Chk_Auto.setEnabled(True)           
+                self.ui.Chk_Auto.setEnabled(True)
 
     def COLETA_INTEGRADOR(self):
         lib.endereco_pararmotor = lib.endereco
@@ -3551,8 +3585,8 @@ class JanelaGrafica(QtGui.QMainWindow):
             if self.ui.label_multicanal.text()!='Conectado':
                 QtGui.QMessageBox.warning(self,'Atenção.','Para ler a tensão, conectar e configurar o Multicanal.\nTente Novamente.',QtGui.QMessageBox.Ok)
                 return False
-            
-        
+
+
         if (self.ui.tabWidget.isTabEnabled(3) == True) and (self.ui.Chk_Auto.isChecked()):
             tipo_coleta = 2
         if (self.ui.C_Sucessivas.isChecked()):
@@ -3565,14 +3599,14 @@ class JanelaGrafica(QtGui.QMainWindow):
 
         if tipo_coleta == 0:
             self.ui.coletar.setEnabled(False)
-            
+
         nome = str(self.ui.Nome_Ima.text())
         nome = nome.upper()
         self.Verificar_Ganho_Maximo()
         self.CONFIGURARINTEGRADOR(1)
         self.ui.label_138.setText('0')
         QtGui.QApplication.processEvents()
-        
+
         if tipo_coleta == 0: #Rotina de Coleta de corrente manual para coleta unica
             self.ui.groupBox_2.setEnabled(False)
             self.Correcao_Posicao()
@@ -3658,7 +3692,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             self.ui.N_Coletas_Manual.setEnabled(True)
             self.ui.tempLine.setEnabled(True)
             self.ui.groupBox_2.setEnabled(True)
-            
+
         if tipo_coleta == 2:  #Rotina de Coleta com corrente em automatico
             try:
                 dados_corrente = self.Converter_Corrente_Arbitraria(self.ui.Corrente_Arbitraria_PUC.toPlainText(),0) ### Armazena os valores de corrente inseridos no campo correntes (A) (QPlainTexyEdit).
@@ -3672,7 +3706,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                     for i in range(len(dados_corrente)):
                         vetor_selecao.append('Y')
                     dados_selecao_correntes = vetor_selecao
-                        
+
                 for i in range(len(dados_corrente)):
                         dados_corrente[i]=self.Verificar_Limite_Corrente(1,dados_corrente[i])
                         if (dados_corrente[i] == 'False'):
@@ -3683,7 +3717,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                 return
             ret = QtGui.QMessageBox.question(self,'Coleta Automatica.','Deseja Coletar Automaticamente ' + str(len(dados_corrente)) + ' Medidas em Diferentes Correntes?',QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,QtGui.QMessageBox.No)
             if ret == QtGui.QMessageBox.No:
-                return            
+                return
             lib.FileName = QtGui.QFileDialog.getSaveFileName(self, 'Save File - Coleta Automática Corrente Automática', nome,'Data files')
             self.ui.groupBox_2.setEnabled(False)
             self.ui.coletar.setEnabled(False)
@@ -3706,7 +3740,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             dados_corrente = self.Converter_Corrente_Arbitraria(self.ui.Corrente_Arbitraria_GPIB.toPlainText(),1)
             if dados_corrente == False:
                 return
-            
+
             if len(dados_corrente)>1:
                 lib.FileName = QtGui.QFileDialog.getSaveFileName(self, 'Save File - Coleta Automática Corrente GPIB', nome,'Data files')
                 self.ui.groupBox_2.setEnabled(False)
@@ -3714,13 +3748,13 @@ class JanelaGrafica(QtGui.QMainWindow):
                 self.ui.observacao.setEnabled(False)
                 self.ui.tempLine.setEnabled(False)
             self.ui.coletar.setEnabled(False)
-            
+
             for i in range(len(dados_corrente)):
                 final = dados_corrente[i]
                 atual = float(lib.GPIB.Coleta_Multimetro())
                 time.sleep(.2)
                 envio_corrente = self.Rampa_Corretora(final,atual,0.1,0.35)
-                
+
                 if envio_corrente == False:
                     QtGui.QMessageBox.warning(self,'Atenção.','Falha no Envio da Corrente.\nTente Novamente.',QtGui.QMessageBox.Ok)
                     lib.GPIB.Saida_Gerador(0)
@@ -3764,7 +3798,7 @@ class JanelaGrafica(QtGui.QMainWindow):
     ########### ABA 10: Resultados ###########
 
     def Salvar_Coletas(self,Auto=0,Coleta=1,corrente=0):
-        
+
         if Auto == 0:
             nome = str(self.ui.Nome_Ima.text())
             nome = nome.upper()
@@ -3812,7 +3846,7 @@ class JanelaGrafica(QtGui.QMainWindow):
 ##
 ##            dado_corrente = int(round(Corrente_Principal,0))
 ##            Corrente_Principal = str('{0:+d}'.format(dado_corrente))
-##            
+##
 ##            nome_bobina = str(self.ui.BobinaNome.text())
 ##            Ne = str(self.ui.nespiras.text())
 ##            Neb = str(self.ui.nespirasb.text())
@@ -3829,23 +3863,23 @@ class JanelaGrafica(QtGui.QMainWindow):
 ##                sentido = 'Horario'
 ##            if lib.sentido == 1:
 ##                sentido = 'Antihorario'
-##            
+##
 ##            if lib.Tipo_Bobina == 0:    ## Tipo = 0 (Radial) Tipo = 1 (Tangencial)
 ##                bobina = 'Bobina Radial'
 ##            if lib.Tipo_Bobina == 1:
 ##                bobina = 'Bobina Tangencial'
-##            
+##
 ##            if lib.Bucked:
 ##                tipo_medicao = 'Bucked'
 ##            else:
 ##                tipo_medicao = 'N_Bucked'
-##                
+##
 ##            Corrente_2 = 0
-##            
+##
 ##            obs = str(self.ui.observacao.toPlainText())
 ##            obs = obs.strip()
 ##            obs = obs.replace('\n',' ')
-##            obs = obs.replace('\t',' ')    
+##            obs = obs.replace('\t',' ')
 ##
 ##            data = time.strftime("%d/%m/%Y", time.localtime())
 ##            data_nome = time.strftime("%y%m%d", time.localtime())
@@ -3853,7 +3887,7 @@ class JanelaGrafica(QtGui.QMainWindow):
 ##            hora_nome = time.strftime("%H%M%S", time.localtime())
 ####            arquivo = QtGui.QFileDialog.getSaveFileName(self, 'Save File', nome,'Data files (*.dat);;Text files (*.txt)')
 ##            arquivo = str(arquivo) + '_' + str(bob_excit) + '_' + str(sigla) + '_' + str(Corrente_Principal).zfill(5) + 'A_' + str(data_nome) + '_' + str(hora_nome) + '.dat'
-##                        
+##
 ##            try:
 ##                f = open(arquivo,'w')
 ##                arquivo_nome = arquivo.replace('/','\\')
@@ -3882,7 +3916,7 @@ class JanelaGrafica(QtGui.QMainWindow):
 ##            if lib.Janela.ui.check_aux.isChecked():             #ACRESCENTADO#
 ##                f.write('corrente_alim_secundaria_avg(A)\t' + str('{0:+0.6e}'.format(numpy.mean(lib.LeituraCorrente_Secundaria.saida))) + '\n')
 ##                f.write('corrente_alim_secundaria_std(A)\t' + str('{0:+0.6e}'.format(numpy.std(lib.LeituraCorrente_Secundaria.saida))) + '\n')
-##            else:                                               
+##            else:
 ##                f.write('corrente_alim_secundaria_avg(A)\t' + str('{0:+0.6e}'.format(numpy.mean(Corrente_2))) + '\n')
 ##                f.write('corrente_alim_secundaria_std(A)\t' + str('{0:+0.6e}'.format(numpy.std(Corrente_2))) + '\n')
 ##            f.write('\n')
@@ -3909,13 +3943,13 @@ class JanelaGrafica(QtGui.QMainWindow):
 ####            f.write("n\tavg_L.Nn(T/m^n-2)\tstd_L.Nn(T/m^n-2)\tavg_L.Sn(T/m^n-2)\tstd_L.Sn(T/m^n-2)\tavg_L.Bn(T/m^n-2)\tstd_L.Bn(T/m^n-2)\tavg_angulo(rad)  \tstd_angulo(rad)  \tavg_L.Nn'(T/m^n-2)\tstd_L.Nn'(T/m^n-2)\tavg_L.Sn'(T/m^n-2)\tstd_L.Sn'(T/m^n-2)\n")
 ####            f.write("n\tavg_L.Nn(T/m^n-2)\tstd_L.Nn(T/m^n-2)\tavg_L.Sn(T/m^n-2)\tstd_L.Sn(T/m^n-2)\tavg_L.Bn(T/m^n-2)\tstd_L.Bn(T/m^n-2)\tavg_angulo(rad)  \tstd_angulo(rad)  \tavg_Nn/NnIma@17.5mm\tstd_Nn/NnIma@17.5mm\tavg_Sn/NnIma@17.5mm\tstd_Sn/NnIma@17.5mm\n")
 ##            f.write("n\tavg_L.Nn(T/m^n-2)\tstd_L.Nn(T/m^n-2)\tavg_L.Sn(T/m^n-2)\tstd_L.Sn(T/m^n-2)\tavg_L.Bn(T/m^n-2)\tstd_L.Bn(T/m^n-2)\tavg_angulo(rad)  \tstd_angulo(rad)  \tavg_Nn/NnIma@"+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Nn/NnIma@"+str((lib.raio_referencia)*1000)+"mm"+"\tavg_Sn/NnIma@"+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Sn/NnIma@"+str((lib.raio_referencia)*1000)+"mm"+"\n")
-##            
-##            
+##
+##
 ##            if len(lib.F[0])>16:
 ##                Nfinal = 16
 ##            else:
 ##                Nfinal = 8
-##                
+##
 ##            if iNumeroColetas >= 1:
 ##                for i in range(1,Nfinal,1):
 ##                    f.write(str('{0:<4d}'.format(i)) + '\t')
@@ -3923,7 +3957,7 @@ class JanelaGrafica(QtGui.QMainWindow):
 ##                    f.write(str('{0:^+18.6e}'.format(abs(lib.sDesvNn[i]))) + '\t')
 ##                    f.write(str('{0:^+18.6e}'.format(lib.Sn[i])) + '\t')
 ##                    f.write(str('{0:^+18.6e}'.format(abs(lib.sDesvSn[i]))) + '\t')
-##                    f.write(str('{0:^+18.6e}'.format(lib.SMod[i])) + '\t')    
+##                    f.write(str('{0:^+18.6e}'.format(lib.SMod[i])) + '\t')
 ##                    f.write(str('{0:^+18.6e}'.format(abs(lib.sDesv[i]))) + '\t')
 ##                    if i == TipoIma or TipoIma == 0:
 ##                        f.write(str('{0:^+18.6e}'.format(lib.Angulo[i])) + '\t')
@@ -3932,7 +3966,7 @@ class JanelaGrafica(QtGui.QMainWindow):
 ##                    if i == TipoIma or TipoIma == 0:
 ##                        f.write(str('{0:^+18.6e}'.format(lib.Desv_angulo[i])) + '\t')
 ##                    else:
-##                        f.write(str('{0:^+18.6e}'.format(0.0)) + '\t')    
+##                        f.write(str('{0:^+18.6e}'.format(0.0)) + '\t')
 ##                    f.write(str('{0:^+18.6e}'.format(lib.Nnl[i])) + '\t')
 ##                    f.write(str('{0:^+18.6e}'.format(abs(lib.sDesvNnl[i]))) + '\t')
 ##                    f.write(str('{0:^+18.6e}'.format(lib.Snl[i])) + '\t')
@@ -3991,10 +4025,10 @@ class JanelaGrafica(QtGui.QMainWindow):
 
             dado_corrente = int(round(Corrente_Principal,0))
             Corrente_Principal = str('{0:+d}'.format(dado_corrente))
-            
+
 ##            if lib.Janela.ui.check_tensao.isChecked():
 ##                resistance = (numpy.mean(lib.Leitura_Tensao.saida)/numpy.mean(lib.LeituraCorrente.saida))
-            
+
             nome_bobina = str(self.ui.BobinaNome.text())
             Ne = str(self.ui.nespiras.text())
             Neb = str(self.ui.nespirasb.text())
@@ -4012,23 +4046,23 @@ class JanelaGrafica(QtGui.QMainWindow):
                 sentido = 'Clockwise'
             if lib.sentido == 1:
                 sentido = 'Counterclockwise'
-            
+
             if lib.Tipo_Bobina == 0:    ## Type = 0 (Radial) Type = 1 (Tangencial)
                 bobina = 'Radial Coil'
             if lib.Tipo_Bobina == 1:
                 bobina = 'Tangential Coil'
-            
+
             if lib.Bucked:
                 tipo_medicao = 'Bucked'
             else:
                 tipo_medicao = 'N_Bucked'
-                
+
             Corrente_2 = 0
-            
+
             obs = str(self.ui.observacao.toPlainText())
             obs = obs.strip()
             obs = obs.replace('\n',' ')
-            obs = obs.replace('\t',' ')    
+            obs = obs.replace('\t',' ')
 
             data = time.strftime("%d/%m/%Y", time.localtime())
             data_nome = time.strftime("%y%m%d", time.localtime())
@@ -4038,7 +4072,7 @@ class JanelaGrafica(QtGui.QMainWindow):
 ##            hora_nome = time.strftime("%H-%M-%S", time.localtime())
 ##            arquivo = QtGui.QFileDialog.getSaveFileName(self, 'Save File', nome,'Data files (*.dat);;Text files (*.txt)')
             arquivo = str(arquivo) + '_' + str(bob_excit) + '_' + str(sigla) + '_' + str(Corrente_Principal).zfill(5) + 'A_' + str(data_nome) + '_' + str(hora_nome) + '.dat'
-                        
+
             try:
                 f = open(arquivo,'w')
                 arquivo_nome = arquivo.replace('/','\\')
@@ -4069,7 +4103,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                 resistance = abs((numpy.mean(lib.Leitura_tensao_e_corrente.tensao)/numpy.mean(lib.LeituraCorrente.saida)))
                 resis_deviation = abs(resistance)*(((numpy.std(lib.LeituraCorrente.saida)/(numpy.mean(lib.LeituraCorrente.saida)))**2 +
                                                    ((numpy.std(lib.Leitura_tensao_e_corrente.tensao))/(numpy.mean(lib.Leitura_tensao_e_corrente.tensao)))**2)**(1/2))
-                
+
                 f.write('main_coil_volt_avg(V)       \t' + str('{0:+0.6e}'.format(numpy.mean(lib.Leitura_tensao_e_corrente.tensao))) + '\n')
                 f.write('main_coil_volt_std(V)       \t' + str('{0:+0.6e}'.format(numpy.std(lib.Leitura_tensao_e_corrente.tensao))) + '\n')
                 f.write('magnet_resistance_avg(ohm)     \t' + str('{0:+0.6e}'.format(resistance)) + '\n')
@@ -4081,7 +4115,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                 resistance = abs((numpy.mean(lib.Leitura_Tensao.saida)/numpy.mean(lib.LeituraCorrente.saida)))
                 resis_deviation = abs(resistance)*(((numpy.std(lib.LeituraCorrente.saida)/(numpy.mean(lib.LeituraCorrente.saida)))**2 +
                                                    ((numpy.std(lib.Leitura_Tensao.saida))/(numpy.mean(lib.Leitura_Tensao.saida)))**2)**(1/2))
-                                                   
+
                 f.write('main_coil_volt_avg(V)       \t' + str('{0:+0.6e}'.format(numpy.mean(lib.Leitura_Tensao.saida))) + '\n')
                 f.write('main_coil_volt_std(V)       \t' + str('{0:+0.6e}'.format(numpy.std(lib.Leitura_Tensao.saida))) + '\n')
                 f.write('magnet_resistance_avg(ohm)     \t' + str('{0:+0.6e}'.format(resistance)) + '\n')
@@ -4118,12 +4152,12 @@ class JanelaGrafica(QtGui.QMainWindow):
                 f.write('cv_coil_current_std(A)       \t' + str('{0:+0.6e}'.format(numpy.std(Corrente_2))) + '\n')
                 f.write('qs_coil_current_avg(A)       \t' + str('{0:+0.6e}'.format(numpy.mean(Corrente_2))) + '\n')
                 f.write('qs_coil_current_std(A)       \t' + str('{0:+0.6e}'.format(numpy.std(Corrente_2))) + '\n')
-                           
+
             elif imabobina == 1 and lib.Janela.ui.check_aux.isChecked() and TipoIma == 2:             #PARA QUADRUPOLO DO ANEL Q14, Q20, Q30#
                 if not lib.Janela.ui.check_tensao.isChecked():
                     f.write('trim_coil_current_avg(A)   \t' + str('{0:+0.6e}'.format(numpy.mean(lib.LeituraCorrente_Secundaria.saida))) + '\n')
                     f.write('trim_coil_current_std(A)   \t' + str('{0:+0.6e}'.format(numpy.std(lib.LeituraCorrente_Secundaria.saida))) + '\n')
-            else:                                               
+            else:
                 f.write('trim_coil_current_avg(A)   \t' + str('{0:+0.6e}'.format(numpy.mean(Corrente_2))) + '\n')
                 f.write('trim_coil_current_std(A)   \t' + str('{0:+0.6e}'.format(numpy.std(Corrente_2))) + '\n')
             f.write('\n')
@@ -4157,13 +4191,13 @@ class JanelaGrafica(QtGui.QMainWindow):
                 sufix = '/NnMagnet@'
             f.write("n\tavg_L.Nn(T/m^n-2)\tstd_L.Nn(T/m^n-2)\tavg_L.Sn(T/m^n-2)\tstd_L.Sn(T/m^n-2)\tavg_L.Bn(T/m^n-2)\tstd_L.Bn(T/m^n-2)\tavg_angle(rad)  \tstd_angle(rad)  \tavg_Nn"+str(sufix)+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Nn"+str(sufix)+str((lib.raio_referencia)*1000)+"mm"+"\tavg_Sn"+str(sufix)+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Sn"+str(sufix)+str((lib.raio_referencia)*1000)+"mm"+"\n")
 
-##            f.write("n\tavg_L.Nn(T/m^n-2)\tstd_L.Nn(T/m^n-2)\tavg_L.Sn(T/m^n-2)\tstd_L.Sn(T/m^n-2)\tavg_L.Bn(T/m^n-2)\tstd_L.Bn(T/m^n-2)\tavg_angle(rad)  \tstd_angle(rad)  \tavg_Nn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Nn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\tavg_Sn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Sn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\n")         
-            
+##            f.write("n\tavg_L.Nn(T/m^n-2)\tstd_L.Nn(T/m^n-2)\tavg_L.Sn(T/m^n-2)\tstd_L.Sn(T/m^n-2)\tavg_L.Bn(T/m^n-2)\tstd_L.Bn(T/m^n-2)\tavg_angle(rad)  \tstd_angle(rad)  \tavg_Nn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Nn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\tavg_Sn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Sn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\n")
+
             if len(lib.F[0])>16:
                 Nfinal = 16
             else:
                 Nfinal = 8
-                
+
             if iNumeroColetas >= 1:
                 for i in range(1,Nfinal,1):
                     f.write(str('{0:<4d}'.format(i)) + '\t')
@@ -4171,7 +4205,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                     f.write(str('{0:^+18.6e}'.format(abs(lib.sDesvNn[i]))) + '\t')
                     f.write(str('{0:^+18.6e}'.format(lib.Sn[i])) + '\t')
                     f.write(str('{0:^+18.6e}'.format(abs(lib.sDesvSn[i]))) + '\t')
-                    f.write(str('{0:^+18.6e}'.format(lib.SMod[i])) + '\t')    
+                    f.write(str('{0:^+18.6e}'.format(lib.SMod[i])) + '\t')
                     f.write(str('{0:^+18.6e}'.format(abs(lib.sDesv[i]))) + '\t')
                     if i == TipoIma or TipoIma == 0:
                         f.write(str('{0:^+18.6e}'.format(lib.Angulo[i])) + '\t')
@@ -4180,7 +4214,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                     if i == TipoIma or TipoIma == 0:
                         f.write(str('{0:^+18.6e}'.format(lib.Desv_angulo[i])) + '\t')
                     else:
-                        f.write(str('{0:^+18.6e}'.format(0.0)) + '\t')    
+                        f.write(str('{0:^+18.6e}'.format(0.0)) + '\t')
                     f.write(str('{0:^+18.6e}'.format(lib.Nnl[i])) + '\t')
                     f.write(str('{0:^+18.6e}'.format(abs(lib.sDesvNnl[i]))) + '\t')
                     f.write(str('{0:^+18.6e}'.format(lib.Snl[i])) + '\t')
@@ -4206,9 +4240,9 @@ class JanelaGrafica(QtGui.QMainWindow):
                 for i in range(0,len(lib.pontos),1):
                     f.write(str(lib.AngulosVoltas[TipoIma][i]) + '\n')
 
-            f.close()        
+            f.close()
 
-            
+
     def SALVAR_HARMONICO_FAC(self,arquivo,Coleta):
             data = time.strftime("%d/%m/%Y", time.localtime())
             hora = time.strftime("%H:%M:%S", time.localtime())
@@ -4226,7 +4260,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             obs = str(self.ui.observacao.toPlainText())
             obs = obs.strip()
             obs = obs.replace('\n',' ')
-            obs = obs.replace('\t',' ')            
+            obs = obs.replace('\t',' ')
 
             # Cabecalho do arquivo - Sugestão FAC(Ximenes)
             f.write('### CURVA DE EXCITACAO - BOBINA GIRANTE: ' + str(nome_bobina) + ' ###\n')
@@ -4249,17 +4283,17 @@ class JanelaGrafica(QtGui.QMainWindow):
             f.write('corrente_alimentacao_std(A)  ' + str('{0:0.5e}'.format(numpy.std(lib.LeituraCorrente.saida))) + '\n')
             f.write('observacoes                  ' + str(obs) + '\n')
             f.write('\n\n\n')
-            
+
             f.write('### Dados de Leitura ###\n')
             f.write('\n')
-            f.write("n   avg_L.Nn(T/m^n-2)   avg_L.Sn(T/m^n-2)   avg_L.Bn(T/m^n-2)   std_L.Nn(T/m^n-2)   std_L.Sn(T/m^n-2)   std_L.Bn(T/m^n-2)   avg_angulo(rad)     avg_L.Nn'(T/m^n-2)  avg_L.Sn'(T/m^n-2)\n") 
-       
-            
+            f.write("n   avg_L.Nn(T/m^n-2)   avg_L.Sn(T/m^n-2)   avg_L.Bn(T/m^n-2)   std_L.Nn(T/m^n-2)   std_L.Sn(T/m^n-2)   std_L.Bn(T/m^n-2)   avg_angulo(rad)     avg_L.Nn'(T/m^n-2)  avg_L.Sn'(T/m^n-2)\n")
+
+
             if len(lib.F[0])>16:
                 Nfinal = 16
             else:
                 Nfinal = 8
-                
+
             if iNumeroColetas >= 1:
                 for i in range(1,Nfinal,1):
                     f.write('{0:<4d}'.format(i))
@@ -4269,7 +4303,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                     f.write('{0:<+20.5e}'.format(abs(lib.sDesvNn[i])))
                     f.write('{0:<+20.5e}'.format(abs(lib.sDesvSn[i])))
                     f.write('{0:<+20.5e}'.format(abs(lib.sDesv[i])))
-                
+
                     if i == TipoIma or TipoIma == 0:
                         f.write('{0:<+20.5e}'.format(lib.Angulo[i]))
                     else:
@@ -4277,14 +4311,14 @@ class JanelaGrafica(QtGui.QMainWindow):
                     f.write('{0:<+20.5e}'.format(lib.Nnl[i]))
                     f.write('{0:<+20.5e}'.format(lib.Snl[i]))
                     f.write('\n')
-            
+
             f.write('\n\n\n')
             f.write('### Dados Armazenados ###\n')
             f.write('\n')
             for i in range(len(lib.pontos[0])):
                 for j in range(len(lib.pontos)):
                     f.write('{0:<+17.8e}'.format(lib.pontos[j][i]))
-                f.write('\n')            
+                f.write('\n')
             f.close()
 
     def SALVAR_HARMONICO_IMA(self,arquivo,Coleta):
@@ -4305,7 +4339,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             obs = obs.strip()
             obs = obs.replace('\n',' ')
             obs = obs.replace('\t',' ')
-                        
+
             # Cabecalho do arquivo (Original)
             f.write('\nCurva de Excitação - Bobina Girante: ' + str(nome_bobina) + '\n\n')
             f.write('.........Dados de Configuração.........\n')
@@ -4324,15 +4358,15 @@ class JanelaGrafica(QtGui.QMainWindow):
 ##            f.write('Deslocamento em Y(mm)..: ' + str(lib.deslY) + '\n')
             f.write('Corrente Alimentação(A): ' + str('{0:0.5e}'.format(numpy.mean(lib.LeituraCorrente.saida))) + ' Erro(S): ' + str('{0:0.5e}'.format(numpy.std(lib.LeituraCorrente.saida))) + '\n')
             f.write('Observações............: ' + str(obs) + '\n\n\n\n\n')
-            
+
             f.write('.........Dados de Leitura.........\n')
             f.write("N\tL.Nn     \tL.Sn     \tL.Bn(T/m^n-2)\tEr_Nn(T/m^n-2)\tEr_Sn(T/m^n-2)\tErro(T/m^n-2)\tÂngulo(rad)\tL.Nn'   \tL.Sn'\n\n")
-            
+
             if len(lib.F[0])>16:
                 Nfinal = 16
             else:
                 Nfinal = 8
-                
+
             if iNumeroColetas >= 1:
                 for i in range(1,Nfinal,1):
                     f.write(str(i) + '\t')
@@ -4345,10 +4379,10 @@ class JanelaGrafica(QtGui.QMainWindow):
                     if i == TipoIma or TipoIma == 0:
                         f.write(str('{0:0.5e}'.format(lib.Angulo[i])) + '\t')
                     else:
-                        f.write(str('      000.00') + '\t')                       
+                        f.write(str('      000.00') + '\t')
                     f.write(str('{0:0.5e}'.format(lib.Nnl[i])) + '\t')
                     f.write(str('{0:0.5e}'.format(lib.Snl[i])) + '\n')
-            
+
             f.write('\n\n\n')
             f.write('.........Dados Armazenados:.........\n\n')
 ##            f.write('Brutos  \t\tMédios\n\n')                 #Cabeçalho de Dados Brutos e Dados Médios
@@ -4366,12 +4400,12 @@ class JanelaGrafica(QtGui.QMainWindow):
             f.write('.........Angulo Volta:.........\n\n')
             for i in range(0,len(lib.pontos),1):
                 f.write(str(lib.AngulosVoltas[TipoIma][i]) + '\n')
-            
+
             f.close()
 ##        else:
 ##            QtGui.QMessageBox.critical(self,'Erro.','Dados inexistentas.',QtGui.QMessageBox.Ok)
 
-            
+
 
 
     def PlotFunc1(self,x,y):
@@ -4467,11 +4501,11 @@ def ColetaDados(Repeticao):
         if coleta == True:
             return True
         else:
-            i+=1        
-    
+            i+=1
+
 # Recebe os dados coletados pelo Integrador
 def ColetaDados_Leitura(Repeticao):
-    if lib.Janela.ui.Hab_Corretora.isChecked() or lib.Janela.ui.cb_DCCT.isChecked():                
+    if lib.Janela.ui.Hab_Corretora.isChecked() or lib.Janela.ui.cb_DCCT.isChecked():
         lib.LeituraCorrente = leitura_corrente_multimetro(lib.voltas_offset,lib.velocidade)
 ##        if lib.controle_fonte == 1 and lib.Janela.ui.check_aux.isChecked():
 ##            lib.LeituraCorrente_Secundaria = leitura_corrente_sec_mult(lib.voltas_offset,lib.velocidade)              #Para leitura da corrente na proópria fonte iLoad1() - ACRESCENTADO#
@@ -4483,14 +4517,14 @@ def ColetaDados_Leitura(Repeticao):
                 lib.Leitura_tensao_e_corrente = multicanal_tensao_e_corrente(lib.voltas_offset,lib.velocidade)          #Para leitura da TENSAO e CORRENTE com o Multicanal - ACRESCENTADO#
         elif lib.controle_fonte == 1 and lib.Janela.ui.check_tensao.isChecked():
             lib.Leitura_Tensao = leitura_tensao_multicanal(lib.voltas_offset,lib.velocidade)                            #Para leitura da tensão com o Multicanal - ACRESCENTADO#
-                      
+
     else:
         lib.LeituraCorrente = leitura_corrente_puc(lib.voltas_offset,lib.velocidade)
 ##        lib.LeituraCorrente_Secundaria = leitura_corrente_puc(lib.voltas_offset,lib.velocidade)
-       
+
     lib.integrador.Enviar('ISC,A,0')
     lib.integrador.Enviar(lib.integrador.PDIIniciaColeta)               # inicia a coleta de dados
-    voltas = lib.voltas_offset + 2                                      
+    voltas = lib.voltas_offset + 2
     lib.motor.SetResolucao(lib.endereco,lib.passos_volta)
     lib.motor.ConfMotor(lib.endereco,lib.velocidade,lib.aceleracao,lib.passos_volta*voltas)
 ##    sentido = lib.Janela.ui.sentido_2.currentIndex()
@@ -4502,7 +4536,7 @@ def ColetaDados_Leitura(Repeticao):
     lib.motor.MoverMotor(lib.endereco)
     while (not lib.motor.ready(lib.endereco)) and lib.parartudo == 0:
         QtGui.QApplication.processEvents()
-    
+
     bitstatus = 0
     while (bitstatus != 1) and lib.parartudo == 0:
         QtGui.QApplication.processEvents()
@@ -4512,7 +4546,7 @@ def ColetaDados_Leitura(Repeticao):
         except:
             pass
     statusintegrador = lib.Janela.Status_Integrador(4,0)
-    
+
     valor = ''
     status = -1
     lib.integrador.LimpaTxRx()
@@ -4525,7 +4559,7 @@ def ColetaDados_Leitura(Repeticao):
         tmp = tmp.decode('utf-8')
         valor = valor + tmp
         status = tmp.find('\x1a')
-    
+
     valor = valor.strip(' A\r\n\x1a')
     pontos = valor.split(' A\r\n')
     lib.integrador.Enviar('ISC,A,1')
@@ -4546,9 +4580,9 @@ def ColetaDados_Leitura(Repeticao):
                 lib.Janela.ui.ganho.setCurrentIndex(index)
                 QtGui.QApplication.processEvents()
                 lib.Janela.CONFIGURARINTEGRADOR(1)
-                time.sleep(1)                
+                time.sleep(1)
         return ColetaDados_Leitura(Repeticao)
-        
+
     if lib.parartudo == 1:
         lib.Janela.ui.groupBox_2.setEnabled(True)
         lib.Janela.ui.coletar.setEnabled(True)
@@ -4569,7 +4603,7 @@ def ColetaDados_Calculos(Repeticao):
     ch_skew = lib.Janela.ui.ch_Skew.isChecked()            #ACRESCENTADO#
     volta_filtro = int(lib.Janela.ui.filtro_voltas.text())
     aux = []
-    
+
     ### Organiza dados para cálculos
     for i in range(int(lib.voltas_offset)):
         aux.append(pontos[i*lib.pontos_integracao:(i+1)*lib.pontos_integracao])
@@ -4582,9 +4616,9 @@ def ColetaDados_Calculos(Repeticao):
         aux.pop(0)  ### despreza voltas de aceleração
     for i in range(int(lib.Janela.ui.descarte_final.text())):
         aux.pop(len(aux)-1) ### despreza voltas de desaceleração
-        
+
 #########################################################
-    
+
     lib.pontos = aux
     dados = numpy.array(aux)*10**(-12)  ##Converte dados.
 
@@ -4592,7 +4626,7 @@ def ColetaDados_Calculos(Repeticao):
     volta_total = len(dados)
     filtro = len(dados)-1
     while (volta_total > filtro):
-        
+
         try:
             dados_std = numpy.std(dados,axis=0) # redefines std values
         except:
@@ -4603,7 +4637,7 @@ def ColetaDados_Calculos(Repeticao):
                 file.write('\n')
             file.close()                                    #####
             return
-        
+
         locsj = numpy.argmax(dados_std) # searches for max std
         avg_std = numpy.mean(dados_std) #average of rms values
         locsi = numpy.argmax(abs(numpy.mean(dados[::,locsj])-dados[::,locsj])) #searches in which column is the max values
@@ -4633,7 +4667,7 @@ def ColetaDados_Calculos(Repeticao):
 
 ################################################ CALCULO MULTIPOLOS BOBINA RADIAL #######################################################################################
     if lib.Tipo_Bobina == 0: ## Tipo = 0 (Radial) Tipo = 1 (Tangencial)
-        
+
     ##### Filtro de leituras pela maior variacao em relaçao a media do angulo #####
         AnguloVolta = []
         iNumeroColetas = len(lib.F)
@@ -4654,8 +4688,11 @@ def ColetaDados_Calculos(Repeticao):
                     Jn = (An*numpy.sin(n*dtheta)+Bn*(numpy.cos(n*dtheta)-1))/(2*R*(numpy.cos(n*dtheta)-1))
                     Kn = (Bn*numpy.sin(n*dtheta)-An*(numpy.cos(n*dtheta)-1))/(2*R*(numpy.cos(n*dtheta)-1))
 
-                    AnguloVolta[i] = (1/TipoIma)*numpy.arctan(Jn/Kn)
-                   
+                    if ch_skew:
+                        AnguloVolta[i] = -(1/TipoIma)*numpy.arctan(Kn/Jn)
+                    else:
+                        AnguloVolta[i] = (1/TipoIma)*numpy.arctan(Jn/Kn)
+
                 maior = numpy.argmax(abs(numpy.mean(AnguloVolta) - AnguloVolta),0)
                 AnguloVolta = numpy.delete(AnguloVolta,maior,0)
                 lib.F = numpy.delete(lib.F,maior,0)
@@ -4664,7 +4701,7 @@ def ColetaDados_Calculos(Repeticao):
                 volta_total-=1
     ###############################################################################
 
-                   
+
         iNumeroColetas = len(lib.F)
         dtheta = 2*numpy.pi/(len(lib.F[0]))
         lib.AngulosVoltas = numpy.zeros(len(lib.F)*21).reshape(21,len(lib.F))
@@ -4696,9 +4733,12 @@ def ColetaDados_Calculos(Repeticao):
                 lib.SSKN2[n] = lib.SSKN2[n] + Kn**2
                 lib.SdbdXN[n] = lib.SdbdXN[n] + dbdXN
                 lib.SdbdXN2[n] = lib.SdbdXN2[n] + dbdXN**2
-                lib.AngulosVoltas[n][i] = (1/n)*numpy.arctan(Jn/Kn)
+                if ch_skew:
+                    lib.AngulosVoltas[n][i] = -(1/n)*numpy.arctan(Kn/Jn)
+                else:
+                    lib.AngulosVoltas[n][i] = (1/n)*numpy.arctan(Jn/Kn)
 
-        lib.Angulo = numpy.mean(lib.AngulosVoltas,axis=1)   
+        lib.Angulo = numpy.mean(lib.AngulosVoltas,axis=1)
         lib.Desv_angulo = numpy.std(lib.AngulosVoltas,axis=1)
 
     ##### Calculo Desvio Padrao das Medidas #####
@@ -4716,8 +4756,8 @@ def ColetaDados_Calculos(Repeticao):
             except:
                 lib.sDesv[i] = 0
                 lib.sDesvSn[i] = 0
-                lib.sDesvNn[i] = 0 
-            
+                lib.sDesvNn[i] = 0
+
             lib.Nn[i] = (lib.SKN[i]/iNumeroColetas)*i
             lib.Sn[i] = (lib.SJN[i]/iNumeroColetas)*i
             lib.SMod[i] = ((lib.Nn[i]**2)+(lib.Sn[i]**2))**0.5              #Modulo dos valores finais de Nn e Sn
@@ -4741,7 +4781,7 @@ def ColetaDados_Calculos(Repeticao):
 ##########################################################################################################################################################################
 
     elif lib.Tipo_Bobina == 1: ## Tipo = 0 (Radial) Tipo = 1 (Tangencial)
-        
+
     ##### Filtro de leituras pela maior variacao em relaçao a media do angulo #####
         AnguloVolta = []
         iNumeroColetas = len(lib.F)
@@ -4763,15 +4803,18 @@ def ColetaDados_Calculos(Repeticao):
 
                     An = lib.F[i][n].real
                     Bn = -lib.F[i][n].imag
-                    
+
                     #Jn = (An*numpy.sin(n*dtheta)+Bn*(numpy.cos(n*dtheta)-1))/(2*R*(numpy.cos(n*dtheta)-1))
                     #Kn = (Bn*numpy.sin(n*dtheta)-An*(numpy.cos(n*dtheta)-1))/(2*R*(numpy.cos(n*dtheta)-1))
 
                     Jn = ( (r2**(-n))*( An*(numpy.cos(n*dtheta)-1) - Bn*numpy.sin(n*dtheta) ) )/ ( 4*Ne*(numpy.cos(n*dtheta)-1)*numpy.sin(raioDelta*n/2) )
                     Kn = ( (r2**(-n))*( Bn*(numpy.cos(n*dtheta)-1) + An*numpy.sin(n*dtheta) ) )/ ( 4*Ne*(numpy.cos(n*dtheta)-1)*numpy.sin(raioDelta*n/2) )
 
-                    AnguloVolta[i] = (1/TipoIma)*numpy.arctan(Jn/Kn)
-                   
+                    if ch_skew:
+                        AnguloVolta[i] = -(1/TipoIma)*numpy.arctan(Kn/Jn)
+                    else:
+                        AnguloVolta[i] = (1/TipoIma)*numpy.arctan(Jn/Kn)
+
                 maior = numpy.argmax(abs(numpy.mean(AnguloVolta) - AnguloVolta),0)
                 AnguloVolta = numpy.delete(AnguloVolta,maior,0)
                 lib.F = numpy.delete(lib.F,maior,0)
@@ -4779,7 +4822,7 @@ def ColetaDados_Calculos(Repeticao):
                 lib.pontos = numpy.delete(lib.pontos,maior,0)
                 volta_total-=1
     ###############################################################################
-                
+
         iNumeroColetas = len(lib.F)
         dtheta = 2*numpy.pi/(len(lib.F[0]))
         lib.AngulosVoltas = numpy.zeros(len(lib.F)*21).reshape(21,len(lib.F))
@@ -4820,9 +4863,12 @@ def ColetaDados_Calculos(Repeticao):
                 lib.SSKN2[n] = lib.SSKN2[n] + Kn**2
                 lib.SdbdXN[n] = lib.SdbdXN[n] + dbdXN
                 lib.SdbdXN2[n] = lib.SdbdXN2[n] + dbdXN**2
-                lib.AngulosVoltas[n][i] = (1/n)*numpy.arctan(Jn/Kn)
+                if ch_skew:
+                    lib.AngulosVoltas[n][i] = -(1/n)*numpy.arctan(Kn/Jn)
+                else:
+                    lib.AngulosVoltas[n][i] = (1/n)*numpy.arctan(Jn/Kn)
 
-        lib.Angulo = numpy.mean(lib.AngulosVoltas,axis=1)   
+        lib.Angulo = numpy.mean(lib.AngulosVoltas,axis=1)
         lib.Desv_angulo = numpy.std(lib.AngulosVoltas,axis=1)
 
     ##### Calculo Desvio Padrao das Medidas #####
@@ -4840,8 +4886,8 @@ def ColetaDados_Calculos(Repeticao):
             except:
                 lib.sDesv[i] = 0
                 lib.sDesvSn[i] = 0
-                lib.sDesvNn[i] = 0 
-            
+                lib.sDesvNn[i] = 0
+
             lib.Nn[i] = (lib.SKN[i]/iNumeroColetas)*i
             lib.Sn[i] = (lib.SJN[i]/iNumeroColetas)*i
             lib.SMod[i] = ((lib.Nn[i]**2)+(lib.Sn[i]**2))**0.5              #Modulo dos valores finais de Nn e Sn
@@ -4875,9 +4921,9 @@ def ColetaDados_Calculos(Repeticao):
         r_ref = 0.012           ## ACRESCENTADO - Selecionado o Anel ##
 
 ##    r_ref = 0.0175 if lib.ima_bobina == 0 else 0.012    ## (apenas teste)
-        
+
     lib.raio_referencia = r_ref
-        
+
     for i in range(1,nmax,1):
         if TipoIma == 0:
             lib.Nnl[i] = lib.Nn[i]
@@ -4886,21 +4932,21 @@ def ColetaDados_Calculos(Repeticao):
             lib.sDesvSnl[i] = 0
 
         elif ch_skew:                   #normaliza pela componente Skew
-            lib.Nnl[i] = (lib.Nn[i] * ((r_ref)**(i-1)))/(lib.Sn[TipoIma] * ((r_ref)**(TipoIma-1)))  
+            lib.Nnl[i] = (lib.Nn[i] * ((r_ref)**(i-1)))/(lib.Sn[TipoIma] * ((r_ref)**(TipoIma-1)))
             lib.Snl[i] = (lib.Sn[i] * ((r_ref)**(i-1)))/(lib.Sn[TipoIma] * ((r_ref)**(TipoIma-1)))
             lib.sDesvNnl[i] = (lib.sDesvNn[i] * ((r_ref)**(i-1)))/(lib.Sn[TipoIma] * ((r_ref)**(TipoIma-1)))
             lib.sDesvSnl[i] = (lib.sDesvSn[i] * ((r_ref)**(i-1)))/(lib.Sn[TipoIma] * ((r_ref)**(TipoIma-1)))
-            
+
         else:
             lib.Nnl[i] = (lib.Nn[i] * ((r_ref)**(i-1)))/(lib.Nn[TipoIma] * ((r_ref)**(TipoIma-1)))
             lib.Snl[i] = (lib.Sn[i] * ((r_ref)**(i-1)))/(lib.Nn[TipoIma] * ((r_ref)**(TipoIma-1)))
             lib.sDesvNnl[i] = (lib.sDesvNn[i] * ((r_ref)**(i-1)))/(lib.Nn[TipoIma] * ((r_ref)**(TipoIma-1)))
             lib.sDesvSnl[i] = (lib.sDesvSn[i] * ((r_ref)**(i-1)))/(lib.Nn[TipoIma] * ((r_ref)**(TipoIma-1)))
-        
-############################################################################
-            
 
-##### Filtro do Erro desvio padrão ##### (##Erro Relativo desv/medida = 10e-4##) 
+############################################################################
+
+
+##### Filtro do Erro desvio padrão ##### (##Erro Relativo desv/medida = 10e-4##)
     if TipoIma == 0:
         max_erro = 1
     if TipoIma == 1:
@@ -4912,12 +4958,12 @@ def ColetaDados_Calculos(Repeticao):
         # Alterado por James Citadini em 18-01-2017.
         #Erro especificado de 0.05% para os 360.2 T/m
         #Assim, 3.6e-2 é 5 vezes melhor do que o necessário na especificação.
-        max_erro = 3.6e-2     ## original 8e-5 
+        max_erro = 3.6e-2     ## original 8e-5
 
     if lib.sDesv[TipoIma]>max_erro or lib.sDesvSn[TipoIma]>max_erro or lib.sDesvNn[TipoIma]>max_erro:
         Historico_Falhas(1)
         return False
-    else:                                                                                                
+    else:
 ##### Plota os graficos na aba de resultados e habilita botoes de coleta #####
         if Repeticao == 1:
             lib.media = numpy.mean(dados, axis =0)
@@ -4932,7 +4978,7 @@ def ColetaDados_Calculos(Repeticao):
                 posicao = int(lib.Janela.ui.pos_ang.text())                     ## ADICIONADO ##
                 lib.Janela.posicao_angular(posicao, lib.endereco,(1/1),(1/1))   ## ADICIONADO ##
                 QtGui.QMessageBox.warning(lib.Janela,'Aviso.','Dados transferidos com sucesso.',QtGui.QMessageBox.Ok)
-                
+
         QtGui.QApplication.processEvents()
         return True
 
@@ -4953,7 +4999,7 @@ def Historico_Falhas(Index):
     f.close
 
 def Salvar_Arquivo(Dados):  ## Salvar arquivo de dados ##
-    file = open('Arquivo.dat','w')  
+    file = open('Arquivo.dat','w')
     for i in range(len(Dados)):
 ##        for j in range(len(dados[0])):
 ##            file.write('{0:^+18.10e}'.format(dados[i][j]) + '\n')
@@ -5075,12 +5121,12 @@ class motortransversal(threading.Thread):
             aceleracao = 5
         else:
             aceleracao = 0.2
-        lib.display.LerDisplay()      
+        lib.display.LerDisplay()
         posicao = lib.display.DisplayPos
         erroX = self.posicaoA-float(posicao[0])
         passosX = int(const.passos_mmA*abs(erroX))
         erroY = self.posicaoB-float(posicao[1])
-        passosY = int(const.passos_mmB*abs(erroY))        
+        passosY = int(const.passos_mmB*abs(erroY))
         while (passosX > const.passos_mmA/250 or passosY > const.passos_mmB/250) and lib.parartudo == 0: #### divisao por 500.
             if(erroX > 0):
                 sentidoA = const.avancoA^1
@@ -5115,7 +5161,7 @@ class motortransversal(threading.Thread):
         lib.Janela.ui.status.setText('Pronto')
         QtGui.QApplication.processEvents()
         lib.Motor_Posicao = 1
-#################################################################################################     
+#################################################################################################
 
 
 #################### Leitura Corrente Puc/Digital #############################
@@ -5126,7 +5172,7 @@ class leitura_corrente_puc(threading.Thread):
         self.velocidade = float(velocidade)
         self.start()
     def run(self):
-        if lib.controle_fonte == 0:              #ACRESCENTADO# Selecionado a PUC 
+        if lib.controle_fonte == 0:              #ACRESCENTADO# Selecionado a PUC
             saida = []
     ##        if (lib.Janela.ui.tabWidget.isTabEnabled(3) == True):
             if (lib.PUC_Conectada == 1) and (lib.Status_Fonte == 1):
@@ -5161,20 +5207,20 @@ class leitura_corrente_multimetro(threading.Thread):
         self.velocidade = float(velocidade)
         self.start()
     def run(self):
-        if lib.controle_fonte == 0:              #ACRESCENTADO# Puc 
+        if lib.controle_fonte == 0:              #ACRESCENTADO# Puc
             saida = []
             for i in range(self.nVoltas):
                 saida.append(lib.Janela.ConverteDCCT())
                 time.sleep((1/self.velocidade)-0.01)
             self.saida = saida
-        else:                                   #ACRESCENTADO# Digital 
+        else:                                   #ACRESCENTADO# Digital
             saida = []
             for i in range(self.nVoltas):
 ##                saida.append(lib.Janela.ConverteDCCT2())  # Original
-                saida.append(lib.Janela.ConverteDCCT())     
+                saida.append(lib.Janela.ConverteDCCT())
                 time.sleep((1/self.velocidade)-0.01)
             self.saida = saida
-            
+
 
 #################### Leitura Corrente Secundária Fonte Digital 10A ############################# ACRESCENTADO
 class leitura_corrente_sec_mult(threading.Thread):
@@ -5205,7 +5251,7 @@ class multicanal_tensao_e_corrente(threading.Thread):
             valores = leitura.split(',')
             if len(valores) >= 2:
                 corrente_trim.append(float(valores[0])*4)  # Cabeça do DCCT selecionada para 320A
-                tensao.append(float(valores[-1]))                   
+                tensao.append(float(valores[-1]))
             time.sleep((1/self.velocidade)-0.01)
         self.corrente_trim = corrente_trim
         self.tensao = tensao
@@ -5255,7 +5301,7 @@ class Ciclagem_Fonte(object):
         self.delay = int(delay)
         self.n_ciclos = int(n_ciclos)
         self.freq = float(freq)
-        self.index = int(index)        
+        self.index = int(index)
         #self.start()
     #def callback(self):
     #    self._stop()
@@ -5324,7 +5370,7 @@ class Ciclagem_Fonte(object):
                 lib.Janela.ui.Carregar_Config_Fonte.setEnabled(True)
                 lib.Janela.ui.Corrente_Atual.setEnabled(True)
         ##        QtGui.QApplication.processEvents()
-                if self.index == 0: 
+                if self.index == 0:
                     QtGui.QMessageBox.information(lib.Janela,'Ciclagem.','Processo de Ciclagem Concluído com Sucesso.',QtGui.QMessageBox.Ok)
                     QtGui.QApplication.processEvents()
             except:
@@ -5333,11 +5379,11 @@ class Ciclagem_Fonte(object):
         else:           #ACRESCENTADO#  Seleciona a fonte digital
 
             lib.Digital.EnableSigGen()
-            if self.index == 0: 
+            if self.index == 0:
                 QtGui.QMessageBox.information(lib.Janela,'Ciclagem.','Processo de Ciclagem Concluído com Sucesso.',QtGui.QMessageBox.Ok)
                 QtGui.QApplication.processEvents()
-            
-        
+
+
 ###############################################################################################
 
 
@@ -5353,7 +5399,7 @@ class Ciclagem_Fonte(object):
 ##
 ##    def callback(self):
 ##        self._stop()
-##        
+##
 ##    def run(self):
 ##        ramp=10
 ##        try:
@@ -5415,7 +5461,7 @@ class Controle_Status(threading.Thread):
             else:
                 lib.Janela.ui.status_fonte.setText('Desligada')
                 lib.Janela.ui.ligar_fonte.setText('Ligar')
-            if (lib.controle_fonte == 0):                   #ACRESCENTADO# Selecionda a PUC    
+            if (lib.controle_fonte == 0):                   #ACRESCENTADO# Selecionda a PUC
                 if (lib.PUC_Conectada == 1) and (lib.Status_Fonte == 1) and (lib.Fonte_Pronta == 1) and (lib.Fonte_Calibrada == [1,1]):
                     lib.Janela.ui.label_135.setText('OK')
                 else:
@@ -5425,35 +5471,35 @@ class Controle_Status(threading.Thread):
                     lib.Janela.ui.label_135.setText('OK')
                 else:
                     lib.Janela.ui.label_135.setText('NOK')
-                
+
             if (lib.Fonte_Calibrada[1] == 1):
                 lib.Janela.ui.label_equacao_saida.setText('Saída: OK')
             else:
                 lib.Janela.ui.label_equacao_saida.setText('Saída: NOK')
-                
+
             if (lib.Fonte_Calibrada[0] == 1):
                 lib.Janela.ui.label_equacao_entrada.setText('Entrada: OK')
             else:
                 lib.Janela.ui.label_equacao_entrada.setText('Entrada: NOK')
             #ACRESCENTADO - LEITURA DOS INTERLOCKS FONTE DIGITAL#
-##            if (lib.Digital_Conectada == 1) and (lib.Status_Fonte == 1) and (lib.Fonte_Pronta == 1) and (lib.Fonte_Calibrada == [1,1]):                
+##            if (lib.Digital_Conectada == 1) and (lib.Status_Fonte == 1) and (lib.Fonte_Pronta == 1) and (lib.Fonte_Calibrada == [1,1]):
 ##                status = lib.Digital.Read_ps_SoftInterlocks()
 ##                time.sleep(.5)
 ##                status2 = lib.Digital.Read_ps_HardInterlocks()
 ##                time.sleep(.5)
 ##                print('ok')
-##                if (status != 0) or (status2 != 0):  
+##                if (status != 0) or (status2 != 0):
 ##                    QtGui.QMessageBox.critical(lib.Janela,'Atenção.','Interlock da Fonte Acionado.',QtGui.QMessageBox.Ok)
 ##                    resp = QtGui.QMessageBox.question(lib.Janela,'Interlock.','Interlock Acionado.\nDeseja resetar Interlocks?',QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,QtGui.QMessageBox.Yes)
 ##                    if resp == QtGui.QMessageBox.Yes:
 ##                        lib.Digital.ResetInterlocks()
-##                    else:                    
+##                    else:
 ##                        QtGui.QApplication.processEvents()
 ##                        return
 
 
 
-                
+
             ### Status Coletas ###
 ##            if (lib.Janela.ui.Chk_Auto.isChecked()) and (lib.Janela.ui.Chk_Auto.isEnabled()):
 ##                lib.Janela.ui.Hab_Corretora.setEnabled(False)
@@ -5473,8 +5519,8 @@ class Controle_Status(threading.Thread):
 ##                lib.Janela.ui.label_22.setEnabled(False)
 ##                lib.Janela.ui.Hab_Corretora.setEnabled(True)
 ##                if (lib.Fonte_Pronta == 1):
-##                    lib.Janela.ui.Chk_Auto.setEnabled(True) 
-###################################################################################################            
+##                    lib.Janela.ui.Chk_Auto.setEnabled(True)
+###################################################################################################
 
 
 
@@ -5500,11 +5546,11 @@ class screen(object):
 
 # ____________________________________________
 if __name__ == '__main__':
-    
+
     tela = screen()
 ##    tela = threading.Thread(target=screen)
 ##    tela.start()
-    
+
 ##    time.sleep(0.5)
     lib.parartudo = 1
     print(threading.activeCount())
