@@ -22,7 +22,7 @@ import SerialDRS            ## Biblioteca Fonte Digital
 import Controle_GPIB
 import Controle_GPIB_2      ## Para comunicação SERIAL do multímetro 34401A
 from PyQt4 import QtCore, QtGui
-from interface1 import Ui_InterfaceBobina
+from interface_v7_Bancada1 import Ui_InterfaceBobina
 import traceback
 
 
@@ -4073,6 +4073,12 @@ class JanelaGrafica(QtGui.QMainWindow):
 ##            arquivo = QtGui.QFileDialog.getSaveFileName(self, 'Save File', nome,'Data files (*.dat);;Text files (*.txt)')
             arquivo = str(arquivo) + '_' + str(bob_excit) + '_' + str(sigla) + '_' + str(Corrente_Principal).zfill(5) + 'A_' + str(data_nome) + '_' + str(hora_nome) + '.dat'
 
+
+##            arquivo = str(arquivo)+ '_' +str(data_nome) + '_' + str(hora_nome) + '_' + str(bob_excit) + '_' + str(sigla) + '_' + str(Corrente_Principal).zfill(5) + 'A_' + '.dat'
+
+##            arquivo = str(arquivo)+ '_' + str(hora_nome) + '_' + str(bob_excit) + '_' + str(Corrente_Principal).zfill(5) + 'A_' + '.dat'
+##            print(arquivo)
+
             try:
                 f = open(arquivo,'w')
                 arquivo_nome = arquivo.replace('/','\\')
@@ -4191,7 +4197,8 @@ class JanelaGrafica(QtGui.QMainWindow):
                 sufix = '/NnMagnet@'
             f.write("n\tavg_L.Nn(T/m^n-2)\tstd_L.Nn(T/m^n-2)\tavg_L.Sn(T/m^n-2)\tstd_L.Sn(T/m^n-2)\tavg_L.Bn(T/m^n-2)\tstd_L.Bn(T/m^n-2)\tavg_angle(rad)  \tstd_angle(rad)  \tavg_Nn"+str(sufix)+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Nn"+str(sufix)+str((lib.raio_referencia)*1000)+"mm"+"\tavg_Sn"+str(sufix)+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Sn"+str(sufix)+str((lib.raio_referencia)*1000)+"mm"+"\n")
 
-##            f.write("n\tavg_L.Nn(T/m^n-2)\tstd_L.Nn(T/m^n-2)\tavg_L.Sn(T/m^n-2)\tstd_L.Sn(T/m^n-2)\tavg_L.Bn(T/m^n-2)\tstd_L.Bn(T/m^n-2)\tavg_angle(rad)  \tstd_angle(rad)  \tavg_Nn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Nn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\tavg_Sn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Sn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\n")
+            # f.write("n\tavg_L.Nn(T/m^n-2)\tstd_L.Nn(T/m^n-2)\tavg_L.Sn(T/m^n-2)\tstd_L.Sn(T/m^n-2)\tavg_L.Bn(T/m^n-2)\tstd_L.Bn(T/m^n-2)\tavg_angle(rad)  \tstd_angle(rad)  \tavg_Nn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Nn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\tavg_Sn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Sn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\n")
+
 
             if len(lib.F[0])>16:
                 Nfinal = 16
@@ -4600,7 +4607,7 @@ def ColetaDados_Calculos(Repeticao):
     r1b = float(lib.Janela.ui.raio1b.text())
     r2b = float(lib.Janela.ui.raio2b.text())
     TipoIma = lib.Janela.ui.TipoIma.currentIndex()
-    ch_skew = lib.Janela.ui.ch_Skew.isChecked()            #ACRESCENTADO#
+    ch_skew = lib.Janela.ui.ch_Skew.isChecked()
     volta_filtro = int(lib.Janela.ui.filtro_voltas.text())
     aux = []
 
