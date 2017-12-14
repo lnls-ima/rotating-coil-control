@@ -114,7 +114,7 @@ class library(object):
 
 
 lib = library()
-lib.GPIB = Controle_GPIB.Controle()  
+lib.GPIB = Controle_GPIB.Controle()
 
 # ____________________________________________
 
@@ -3238,10 +3238,10 @@ class JanelaGrafica(QtGui.QMainWindow):
         item.setText(Text)
 
     def deslocamento(self):
-        main_harmonic = int(lib.Janela.ui.TipoIma.currentIndex())
+        main_harmonic = int(self.ui.TipoIma.currentIndex())
 
         if main_harmonic > 1:
-            if lib.Janela.ui.ch_Skew.isChecked():
+            if self.ui.ch_Skew.isChecked():
                 main_column = 0
                 perp_column = 2
                 dy_sign = 1
