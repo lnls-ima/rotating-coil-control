@@ -29,7 +29,7 @@ import traceback
 
 # ____________________________________________
 # Biblioteca de variaveis globais utilizadas
-class library(object):
+class lib(object):
     def __init__(self):
         self.display = 0            # Display Heidenhain
         self.motor = 0              # Driver do motor
@@ -113,7 +113,8 @@ class library(object):
         self.Digital_Conectada = 0     #ACRESCENTADO#  Retorna se a fonte está conectada: 0 = Desconectada   1 = Conectada
 
 
-lib = library()
+lib = lib()
+##lib.GPIB = Controle_GPIB_2.Controle()  #Modificado para a biblioteca Controle_GPIB_2 para a comunicação Serial do multímetro 34401A da Bancada 2.
 lib.GPIB = Controle_GPIB.Controle()
 
 # ____________________________________________
@@ -2614,7 +2615,8 @@ class JanelaGrafica(QtGui.QMainWindow):
                 self.ui.label_gerador.setText('Falha')
 
         if self.ui.ckBox_GPIB_2.isChecked():                    #ACRESCENTADO# Função para comunicação da bancada 2. !!SERIAL E NÃO GPIB!!
-            status = lib.GPIB.Conectar_Multimetro_Serial(int(self.ui.Enderac_Multimetro.text()))
+##            status = lib.GPIB.Conectar_Multimetro_Serial(int(self.ui.Enderac_Multimetro.text()))      # Para multímetro SERIAL
+            status = lib.GPIB.Conectar_Multimetro(int(self.ui.Enderac_Multimetro.text()))
             if status == True:
                 self.ui.label_multimetro.setText('Conectado')
             else:
@@ -3176,8 +3178,7 @@ class JanelaGrafica(QtGui.QMainWindow):
             self.ui.posicao_angular.setText('0')
         self.posicao_angular(posicao, lib.endereco,(1/1),(1/1))
 
-    #def posicao_angular(self, posicao, endereco, velocidade=1, aceleracao=1):
-    def posicao_angular(self, posicao, endereco, velocidade=10, aceleracao=10):
+    def posicao_angular(self, posicao, endereco, velocidade=1, aceleracao=1):
         tempoespera = 0.1
         lib.integrador.LimpaTxRx()
         lib.integrador.Enviar(lib.integrador.PDILerEncoder)
@@ -3196,6 +3197,7 @@ class JanelaGrafica(QtGui.QMainWindow):
         lib.motor.MoverMotor(endereco)
 
     def Correcao_Posicao(self):
+##        posicao = lib.pulsos_trigger + (lib.pulsos_encoder / 1.5)
         posicao = lib.pulsos_trigger + (lib.pulsos_encoder / 2)
         if posicao > lib.pulsos_encoder:
             posicao = posicao - lib.pulsos_encoder
@@ -3296,14 +3298,15 @@ class JanelaGrafica(QtGui.QMainWindow):
 
         lib.integrador.Enviar(lib.integrador.PDIZerarContador)
         time.sleep(tempoespera)
+
         lib.integrador.Enviar(lib.integrador.PDIProcuraIndice)
         time.sleep(tempoespera)
+
         lib.motor.SetResolucao(lib.endereco,lib.passos_volta)
 
-        #lib.motor.ConfMotor(lib.endereco,1,1,lib.passos_volta*3)
-        lib.motor.ConfMotor(lib.endereco,10,10,lib.passos_volta)
-
+        lib.motor.ConfMotor(lib.endereco,1,1,lib.passos_volta*3) # 3 voltas
         lib.motor.ConfModo(lib.endereco,0,lib.sentido)
+
         lib.motor.MoverMotor(lib.endereco)
         while not lib.motor.ready(lib.endereco) and not lib.parartudo:
             continue
@@ -3312,14 +3315,14 @@ class JanelaGrafica(QtGui.QMainWindow):
             lib.integrador.LimpaTxRx()
             lib.integrador.Enviar(lib.integrador.PDILerEncoder)
             time.sleep(tempoespera)
+
             valor = lib.integrador.ser.readall().strip()
             valor = str(valor).strip('b').strip("'")
             valor = int(valor)
-##            print(valor)
-            passos = int((lib.pulsos_encoder-valor)*lib.passos_volta/lib.pulsos_encoder)  #/10000
-##            print(passos)
-##            lib.motor.ConfMotor(lib.endereco,1,1,passos)
-            lib.motor.ConfMotor(lib.endereco,10,10,passos)
+
+            passos = int(lib.passos_volta*valor/lib.pulsos_encoder)  #/10000
+
+            lib.motor.ConfMotor(lib.endereco,1,1,passos)
             lib.motor.ConfModo(lib.endereco,0,0)
             lib.motor.MoverMotor(lib.endereco)
 
@@ -3351,14 +3354,14 @@ class JanelaGrafica(QtGui.QMainWindow):
         except:
             QtGui.QMessageBox.critical(self,'Erro.','Carregar Parâmetros da Bobina.',QtGui.QMessageBox.Ok)
             return
-        if lib.velocidade > 50:
+        if lib.velocidade > 2.5:
             QtGui.QMessageBox.warning(self,'Atenção.','Velocidade muito alta.',QtGui.QMessageBox.Ok)
-            lib.velocidade = 50
-            self.ui.velocidade_int.setText('50')
+            lib.velocidade = 2.5
+            self.ui.velocidade_int.setText('2.5')
         if lib.aceleracao > 100:
             QtGui.QMessageBox.warning(self,'Atenção.','Aceleracao muito alta.',QtGui.QMessageBox.Ok)
             lib.aceleracao = 100
-            self.ui.aceleracao_int.setText('100')
+            self.ui.aceleracao_int.setText('10')
         if lib.pulsos_trigger > int(lib.pulsos_encoder-1):
             QtGui.QMessageBox.critical(self,'Atenção.','Pulso de Início Maior que permitido.\nTente novamente.',QtGui.QMessageBox.Ok)
             return
@@ -4197,7 +4200,7 @@ class JanelaGrafica(QtGui.QMainWindow):
                 sufix = '/NnMagnet@'
             f.write("n\tavg_L.Nn(T/m^n-2)\tstd_L.Nn(T/m^n-2)\tavg_L.Sn(T/m^n-2)\tstd_L.Sn(T/m^n-2)\tavg_L.Bn(T/m^n-2)\tstd_L.Bn(T/m^n-2)\tavg_angle(rad)  \tstd_angle(rad)  \tavg_Nn"+str(sufix)+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Nn"+str(sufix)+str((lib.raio_referencia)*1000)+"mm"+"\tavg_Sn"+str(sufix)+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Sn"+str(sufix)+str((lib.raio_referencia)*1000)+"mm"+"\n")
 
-            # f.write("n\tavg_L.Nn(T/m^n-2)\tstd_L.Nn(T/m^n-2)\tavg_L.Sn(T/m^n-2)\tstd_L.Sn(T/m^n-2)\tavg_L.Bn(T/m^n-2)\tstd_L.Bn(T/m^n-2)\tavg_angle(rad)  \tstd_angle(rad)  \tavg_Nn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Nn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\tavg_Sn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Sn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\n")
+##            f.write("n\tavg_L.Nn(T/m^n-2)\tstd_L.Nn(T/m^n-2)\tavg_L.Sn(T/m^n-2)\tstd_L.Sn(T/m^n-2)\tavg_L.Bn(T/m^n-2)\tstd_L.Bn(T/m^n-2)\tavg_angle(rad)  \tstd_angle(rad)  \tavg_Nn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Nn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\tavg_Sn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\tstd_Sn/NnMagnet@"+str((lib.raio_referencia)*1000)+"mm"+"\n")
 
 
             if len(lib.F[0])>16:
@@ -4607,8 +4610,8 @@ def ColetaDados_Calculos(Repeticao):
     r1b = float(lib.Janela.ui.raio1b.text())
     r2b = float(lib.Janela.ui.raio2b.text())
     TipoIma = lib.Janela.ui.TipoIma.currentIndex()
-    ch_skew = lib.Janela.ui.ch_Skew.isChecked()
     volta_filtro = int(lib.Janela.ui.filtro_voltas.text())
+    ch_skew = lib.Janela.ui.ch_Skew.isChecked()
     aux = []
 
     ### Organiza dados para cálculos
@@ -4669,8 +4672,8 @@ def ColetaDados_Calculos(Repeticao):
         nmax = 9
 
 ##    print(lib.F[0])
-##    print(len(lib.F[0]))
-##    print(len(lib.F))
+    # print(len(lib.F[0]))
+    # print(len(lib.F))
 
 ################################################ CALCULO MULTIPOLOS BOBINA RADIAL #######################################################################################
     if lib.Tipo_Bobina == 0: ## Tipo = 0 (Radial) Tipo = 1 (Tangencial)
@@ -4707,7 +4710,6 @@ def ColetaDados_Calculos(Repeticao):
                 lib.pontos = numpy.delete(lib.pontos,maior,0)
                 volta_total-=1
     ###############################################################################
-
 
         iNumeroColetas = len(lib.F)
         dtheta = 2*numpy.pi/(len(lib.F[0]))
@@ -4949,7 +4951,6 @@ def ColetaDados_Calculos(Repeticao):
             lib.Snl[i] = (lib.Sn[i] * ((r_ref)**(i-1)))/(lib.Nn[TipoIma] * ((r_ref)**(TipoIma-1)))
             lib.sDesvNnl[i] = (lib.sDesvNn[i] * ((r_ref)**(i-1)))/(lib.Nn[TipoIma] * ((r_ref)**(TipoIma-1)))
             lib.sDesvSnl[i] = (lib.sDesvSn[i] * ((r_ref)**(i-1)))/(lib.Nn[TipoIma] * ((r_ref)**(TipoIma-1)))
-
 ############################################################################
 
 
@@ -5243,7 +5244,7 @@ class leitura_corrente_sec_mult(threading.Thread):
             time.sleep((1/self.velocidade)-0.01)
         self.saida = saida
 
-################################ Leitura de TENSÃO E CORRENTE (secundária) juntos ######################## ACRESCENTADO
+################################ Leitura de TENSÃO E CORRENTE juntos ######################## ACRESCENTADO
 class multicanal_tensao_e_corrente(threading.Thread):
     def __init__(self, nVoltas, velocidade):
         threading.Thread.__init__(self)
@@ -5538,6 +5539,7 @@ class Controle_Status(threading.Thread):
 
 ################################################################# FINAL THREADING #################################################################
 
+
 # ____________________________________________
 # Objeto da janela de programa
 class screen(object):
@@ -5553,32 +5555,7 @@ class screen(object):
 
 # ____________________________________________
 if __name__ == '__main__':
-
     tela = screen()
-##    tela = threading.Thread(target=screen)
-##    tela.start()
-
-##    time.sleep(0.5)
     lib.parartudo = 1
     print(threading.activeCount())
     lib.Janela.Emergencia_Fonte()
-
-
-# ____________________________________________
-### Objeto da janela de programa - Thread
-##class screen(threading.Thread):
-##    def __init__(self):
-##        threading.Thread.__init__(self)
-##        self.start()
-##
-##    def run(self):
-##        self.app = QtGui.QApplication(sys.argv)
-##        self.lib.Janela = JanelaGrafica()
-##        self.lib.Janela.show()
-##        sys.exit(self.app.exec_())
-##
-##if __name__ == '__main__':
-##    tela = screen()
-##    tela.lib.parartudo = 1
-##    print(threading.activeCount())
-##    tela.lib.Janela.Emergencia_Fonte()
