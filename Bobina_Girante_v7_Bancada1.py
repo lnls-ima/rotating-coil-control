@@ -3264,11 +3264,11 @@ class JanelaGrafica(QtGui.QMainWindow):
             dx = (1/(main_harmonic-1))*(prev_multipole/main_multipole)
             dy = (dy_sign)*(1/(main_harmonic-1))*(
                 prev_perp_multipole/main_multipole)
-            dx_mm = dx*1e-06
-            dy_mm = dy*1e-06
+            dx_um = dx*1e06
+            dy_um = dy*1e06
 
-            self.ui.desl_X.setText(str(dx_mm))
-            self.ui.desl_Y.setText(str(dy_mm))
+            self.ui.desl_X.setText(str(dx_um))
+            self.ui.desl_Y.setText(str(dy_um))
 
         else:
             self.ui.desl_X.setText("")
